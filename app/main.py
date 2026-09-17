@@ -10,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.ingestion.router import router as ingestion_router
 from app.rag.router import router as rag_router
+from app.agents.router import router as agents_router 
 
 app = FastAPI(
     title="AI Project Intelligence & Risk Advisor",
@@ -26,6 +27,7 @@ app.add_middleware(
 
 app.include_router(ingestion_router, tags=["Ingestion"])
 app.include_router(rag_router, tags=["RAG"])
+app.include_router(agents_router, tags=["Agents"])  
 
 
 @app.get("/")
