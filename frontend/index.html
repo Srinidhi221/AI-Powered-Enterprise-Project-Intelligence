@@ -5,7 +5,132 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NEXUS — Knowledge Retrieval Engine</title>
 
+
+
 <style>
+        /* ---------------- AGENTS PANEL ---------------- */
+
+    .agents-controls {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+
+    #agentSourceSelect {
+        flex: 1;
+        min-width: 240px;
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        color: var(--text);
+        padding: 12px 14px;
+        font-size: 13px;
+        font-family: inherit;
+    }
+
+    .agents-status {
+        font-family: monospace;
+        font-size: 11px;
+        letter-spacing: .06em;
+        color: var(--muted);
+        margin-bottom: 16px;
+        min-height: 14px;
+    }
+
+    .agents-status.error {
+        color: var(--danger);
+    }
+
+    .agent-card {
+        border: 1px solid var(--border);
+        background: var(--surface-2);
+        padding: 22px;
+        margin-bottom: 18px;
+    }
+
+    .agent-card h3 {
+        font-size: 13px;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: var(--amber);
+        margin-bottom: 14px;
+    }
+
+    .agent-card ul {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .agent-card li {
+        font-size: 13px;
+        color: var(--text-soft);
+        padding-left: 14px;
+        border-left: 2px solid var(--border-light);
+    }
+
+    .agent-subgroup {
+        margin-bottom: 16px;
+    }
+
+    .agent-subgroup-label {
+        font-size: 10px;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .badge {
+        display: inline-block;
+        font-size: 10px;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+        padding: 2px 8px;
+        border: 1px solid var(--border-light);
+        margin-right: 8px;
+    }
+
+    .badge.severity-high {
+        color: var(--danger);
+        border-color: var(--danger);
+    }
+
+    .badge.severity-medium {
+        color: var(--amber);
+        border-color: var(--amber);
+    }
+
+    .badge.severity-low {
+        color: var(--success);
+        border-color: var(--success);
+    }
+
+    .badge.type-blocker {
+        color: var(--danger);
+        border-color: var(--danger);
+    }
+
+    .badge.type-pending {
+        color: var(--amber);
+        border-color: var(--amber);
+    }
+
+    .badge.type-action {
+        color: var(--teal);
+        border-color: var(--teal);
+    }
+
+    .agent-forecast {
+        font-size: 13px;
+        color: var(--text-soft);
+        line-height: 1.6;
+        padding: 14px;
+        background: var(--surface-3);
+        border-left: 2px solid var(--teal);
+    }
     * {
         box-sizing: border-box;
         margin: 0;
@@ -1336,6 +1461,66 @@
 
         </section>
 
+            <!-- ================= AGENTS ================= -->
+
+        <section class="panel agents-panel">
+
+            <div class="panel-header">
+
+                <div class="panel-title">
+
+                    <span class="panel-number">
+                        04
+                    </span>
+
+                    <h2>
+                        Project Intelligence Agents
+                    </h2>
+
+                </div>
+
+                <span class="panel-label">
+                    SCOPE · RISK · BLOCKERS
+                </span>
+
+            </div>
+
+            <div class="panel-content">
+
+                <div class="agents-controls">
+
+                    <select id="agentSourceSelect">
+                        <option value="">Select an ingested document…</option>
+                    </select>
+
+                    <button
+                        class="action-button"
+                        id="runAgentsBtn"
+                    >
+                        Run intelligence analysis
+                    </button>
+
+                </div>
+
+                <div
+                    id="agentsStatus"
+                    class="agents-status"
+                ></div>
+
+                <div id="agentsResults">
+
+                    <div class="empty">
+                        Upload a document above, then select it here
+                        and run the analysis to extract scope, risks,
+                        and blockers.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
     </main>
 
 
@@ -1797,7 +1982,7 @@
 
             fileState.textContent =
                 "INDEXED";
-
+            loadAgentSources();
 
             uploadBtn.textContent =
                 "Ingestion complete";
@@ -2322,6 +2507,219 @@
             );
 
     }
+
+
+        // ================= MILESTONE 2: AGENTS =================
+
+    const agentSourceSelect =
+        document.getElementById("agentSourceSelect");
+
+    const runAgentsBtn =
+        document.getElementById("runAgentsBtn");
+
+    const agentsStatus =
+        document.getElementById("agentsStatus");
+
+    const agentsResults =
+        document.getElementById("agentsResults");
+
+
+    async function loadAgentSources() {
+
+        try {
+
+            const response =
+                await fetch(`${API_BASE}/documents`);
+
+            if (!response.ok) return;
+
+            const data = await response.json();
+
+            const previousValue =
+                agentSourceSelect.value;
+
+            agentSourceSelect.innerHTML =
+                '<option value="">Select an ingested document…</option>';
+
+            (data.sources || []).forEach((source) => {
+
+                const option =
+                    document.createElement("option");
+
+                option.value = source;
+                option.textContent = source;
+
+                agentSourceSelect.appendChild(option);
+
+            });
+
+            if (previousValue) {
+                agentSourceSelect.value = previousValue;
+            }
+
+        }
+
+        catch (error) {
+            console.error("Failed to load document sources:", error);
+        }
+
+    }
+
+
+    function severityBadgeClass(severity) {
+        const s = (severity || "").toLowerCase();
+        if (s === "high") return "severity-high";
+        if (s === "medium") return "severity-medium";
+        return "severity-low";
+    }
+
+
+    function itemTypeBadgeClass(itemType) {
+        const t = (itemType || "").toLowerCase();
+        if (t === "blocker") return "type-blocker";
+        if (t === "pending decision") return "type-pending";
+        return "type-action";
+    }
+
+
+    function renderAgentResults(data) {
+
+        const scope = data.scope || {};
+        const risks = data.risks || {};
+        const blockers = data.blockers || {};
+
+        let html = "";
+
+        // --- Scope card ---
+        html += `<div class="agent-card"><h3>Scope &amp; Deliverables</h3>`;
+
+        if ((scope.project_goals || []).length) {
+            html += `<div class="agent-subgroup">
+                <span class="agent-subgroup-label">Project goals</span>
+                <ul>${scope.project_goals.map(g => `<li>${escapeHTML(g)}</li>`).join("")}</ul>
+            </div>`;
+        }
+
+        if ((scope.deliverables || []).length) {
+            html += `<div class="agent-subgroup">
+                <span class="agent-subgroup-label">Deliverables</span>
+                <ul>${scope.deliverables.map(d =>
+                    `<li><strong>${escapeHTML(d.name || "")}</strong> — ${escapeHTML(d.description || "")}${d.due_or_timeline ? ` (${escapeHTML(d.due_or_timeline)})` : ""}</li>`
+                ).join("")}</ul>
+            </div>`;
+        }
+
+        if ((scope.milestones || []).length) {
+            html += `<div class="agent-subgroup">
+                <span class="agent-subgroup-label">Milestones</span>
+                <ul>${scope.milestones.map(m => `<li>${escapeHTML(m)}</li>`).join("")}</ul>
+            </div>`;
+        }
+
+        html += `</div>`;
+
+        // --- Risk card ---
+        html += `<div class="agent-card"><h3>Risk Detection &amp; Delivery Forecast</h3>`;
+
+        if (risks.overall_delivery_forecast) {
+            html += `<div class="agent-forecast">${escapeHTML(risks.overall_delivery_forecast)}</div><br>`;
+        }
+
+        if ((risks.risks || []).length) {
+            html += `<ul>${risks.risks.map(r =>
+                `<li><span class="badge ${severityBadgeClass(r.severity)}">${escapeHTML(r.severity || "")}</span>
+                 <span class="badge">${escapeHTML(r.category || "")}</span>
+                 ${escapeHTML(r.risk || "")}</li>`
+            ).join("")}</ul>`;
+        } else {
+            html += `<p style="color: var(--muted); font-size: 13px;">No risks identified in this document.</p>`;
+        }
+
+        html += `</div>`;
+
+        // --- Blocker card ---
+        html += `<div class="agent-card"><h3>Blockers &amp; Action Items</h3>`;
+
+        if ((blockers.action_items || []).length) {
+            html += `<ul>${blockers.action_items.map(a =>
+                `<li><span class="badge ${itemTypeBadgeClass(a.item_type)}">${escapeHTML(a.item_type || "")}</span>
+                 ${escapeHTML(a.item || "")}${a.owner ? ` — <em>${escapeHTML(a.owner)}</em>` : ""}</li>`
+            ).join("")}</ul>`;
+        } else {
+            html += `<p style="color: var(--muted); font-size: 13px;">No blockers or action items identified.</p>`;
+        }
+
+        html += `</div>`;
+
+        agentsResults.innerHTML = html;
+
+    }
+
+
+    async function runAgentAnalysis() {
+
+        const source = agentSourceSelect.value;
+
+        if (!source) {
+            agentsStatus.textContent = "Select a document first.";
+            agentsStatus.classList.add("error");
+            return;
+        }
+
+        agentsStatus.classList.remove("error");
+        agentsStatus.textContent = "Running Scope, Risk, and Blocker agents…";
+        runAgentsBtn.disabled = true;
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_BASE}/agents/analyze/${encodeURIComponent(source)}`
+                );
+
+            if (!response.ok) {
+
+                const errorBody =
+                    await response.json().catch(() => ({}));
+
+                throw new Error(
+                    errorBody.detail ||
+                    `Analysis failed (${response.status})`
+                );
+
+            }
+
+            const data = await response.json();
+
+            renderAgentResults(data);
+
+            agentsStatus.textContent =
+                `Analysis complete for ${source}`;
+
+        }
+
+        catch (error) {
+
+            console.error("Agent analysis error:", error);
+
+            agentsStatus.textContent =
+                error.message || "Analysis failed.";
+
+            agentsStatus.classList.add("error");
+
+        }
+
+        finally {
+            runAgentsBtn.disabled = false;
+        }
+
+    }
+
+
+    runAgentsBtn.addEventListener("click", runAgentAnalysis);
+
+    // Populate the document picker on page load
+    loadAgentSources();
 
 </script>
 

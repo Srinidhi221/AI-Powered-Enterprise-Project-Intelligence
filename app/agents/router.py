@@ -69,3 +69,16 @@ async def analyze_document(source: str):
         risks=risks,
         blockers=blockers,
     )
+
+
+from app.rag.vector_store import list_sources
+
+
+@router.get("/documents")
+async def list_documents():
+    """
+    List filenames currently indexed in the vector store — i.e. every
+    document available for the Scope/Risk/Blocker agents to analyze.
+    Used by the frontend to populate the document picker.
+    """
+    return {"sources": list_sources()}

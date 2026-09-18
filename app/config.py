@@ -25,8 +25,14 @@ CHUNK_OVERLAP = 40
 EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
 
 # --- Milestone 2: cloud LLM settings for the agent pipeline ---
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash-lite")
+# GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+# GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash-lite")
+# AGENT_TEMPERATURE = 0.2
+# AGENT_MAX_CONTEXT_CHARS = 12000
+
+# --- Milestone 2: cloud LLM settings for the agent pipeline ---
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
 AGENT_TEMPERATURE = 0.2
 AGENT_MAX_CONTEXT_CHARS = 12000
 
