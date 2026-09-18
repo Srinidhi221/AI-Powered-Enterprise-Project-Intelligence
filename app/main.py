@@ -14,8 +14,8 @@ from app.agents.router import router as agents_router
 
 app = FastAPI(
     title="AI Project Intelligence & Risk Advisor",
-    description="Milestone 1: Document ingestion + RAG pipeline",
-    version="0.1.0",
+    description="Milestone 1: Document ingestion + RAG pipeline, Milestone 2: Scope, Risk, and Blocker agents.",
+    version="0.2.0",
 )
 
 app.add_middleware(

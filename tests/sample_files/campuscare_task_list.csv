@@ -1,0 +1,16 @@
+Task_ID,Task_Name,Module,Assigned_To,Start_Date,Due_Date,Status,Priority,Dependency,Description
+CC-001,Design database schema,Backend,Aarav,2026-09-01,2026-09-03,Completed,High,None,Design PostgreSQL schema for users and support requests
+CC-002,Implement authentication API,Backend,Aarav,2026-09-04,2026-09-07,Completed,High,CC-001,Implement registration login and authentication endpoints
+CC-003,Build student request form,Frontend,Meera,2026-09-05,2026-09-10,Completed,High,None,Create responsive form for submitting support requests
+CC-004,Implement request creation API,Backend,Aarav,2026-09-06,2026-09-11,Completed,High,CC-001,Implement REST endpoint for creating student requests
+CC-005,Build admin dashboard,Frontend,Meera,2026-09-11,2026-09-17,In Progress,High,CC-004,Develop administrator dashboard for managing requests
+CC-006,Implement analytics API,Backend,Aarav,2026-09-12,2026-09-17,Delayed,High,CC-004,Create API for request volume and resolution statistics
+CC-007,Integrate cloud LLM API,AI,Rohan,2026-09-12,2026-09-18,Blocked,High,CC-010,Integrate cloud LLM service with AI assistance module
+CC-008,Develop AI FAQ module,AI,Rohan,2026-09-15,2026-09-22,Not Started,High,CC-007,Implement AI-powered FAQ and guidance responses
+CC-009,Configure email notifications,Testing,Nisha,2026-09-14,2026-09-18,Blocked,Medium,CC-011,Configure and test email notification service
+CC-010,Finalize cloud LLM credentials,AI,Rohan,2026-09-14,2026-09-16,Delayed,High,None,Obtain approved cloud LLM credentials for development
+CC-011,Configure SMTP credentials,Testing,Nisha,2026-09-14,2026-09-17,Pending,Medium,None,Obtain approved SMTP configuration
+CC-012,Update request priority field,Backend,Aarav,2026-09-14,2026-09-15,In Progress,Medium,CC-001,Add priority field to support request database and API
+CC-013,Update frontend priority selector,Frontend,Meera,2026-09-16,2026-09-18,Not Started,Medium,CC-012,Add priority selection to request form
+CC-014,Security testing,Testing,Nisha,2026-09-20,2026-09-23,Not Started,High,CC-005,Perform authentication and API security testing
+CC-015,Final deployment,DevOps,Aarav,2026-09-24,2026-09-26,Not Started,High,CC-008;CC-014,Deploy application after AI integration and security validation

@@ -88,3 +88,42 @@ def query_similar(query_embedding: List[float], top_k: int = 5) -> List[Dict]:
 def count_chunks() -> int:
     """Return total number of chunks currently stored."""
     return get_collection().count()
+
+
+def get_chunks_by_source(source: str) -> List[Dict]:
+    """
+    Fetch every chunk belonging to one uploaded document, ordered by chunk_id.
+
+    Used by the Milestone 2 agents, which need the (near) full text of a
+    document rather than a top-k semantic slice of it.
+
+    Returns:
+        List of {"text": str, "source": str, "chunk_id": int}, in original order.
+    """
+    collection = get_collection()
+    results = collection.get(where={"source": source})
+
+    documents = results.get("documents") or []
+    metadatas = results.get("metadatas") or []
+
+    chunks = [
+        {"text": doc, "source": meta["source"], "chunk_id": meta["chunk_id"]}
+        for doc, meta in zip(documents, metadatas)
+    ]
+    chunks.sort(key=lambda c: c["chunk_id"])
+    return chunks
+
+
+def get_document_text(source: str) -> str:
+    """Reconstruct a document's full text by source (chunks joined in order)."""
+    chunks = get_chunks_by_source(source)
+    return "\n".join(c["text"] for c in chunks).strip()
+
+
+def list_sources() -> List[str]:
+    """Return the distinct document filenames currently indexed in the store."""
+    collection = get_collection()
+    results = collection.get()
+    metadatas = results.get("metadatas") or []
+    sources = sorted({meta["source"] for meta in metadatas})
+    return sources
