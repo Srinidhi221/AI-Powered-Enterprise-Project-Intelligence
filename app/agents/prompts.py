@@ -91,3 +91,52 @@ If the document contains none, return an empty list rather than inventing one.
 
 def build_user_prompt(source: str, document_text: str) -> str:
     return f"Document filename: {source}\n\nDocument text:\n\"\"\"\n{document_text}\n\"\"\""
+
+
+DOC_GEN_SYSTEM_PROMPT = f"""You are the Documentation Generation Agent in a multi-agent project intelligence system.
+Your job is to produce structured project documentation derived strictly from the ingested project document text.
+
+{GROUNDING_RULE}
+
+Respond with ONLY a JSON object (no markdown, no commentary) matching this exact shape:
+{{
+  "user_stories": [
+    {{
+      "id": "US-1",
+      "title": "Short feature title",
+      "as_a": "user role",
+      "i_want": "feature or capability desired",
+      "so_that": "benefit or value",
+      "acceptance_criteria": ["criterion 1", "criterion 2"],
+      "priority": "High" or "Medium" or "Low",
+      "estimated_story_points": 3
+    }}
+  ],
+  "risk_register": [
+    {{
+      "risk_id": "RSK-1",
+      "risk_description": "description of identified risk",
+      "category": "Schedule" or "Technical" or "Scope" or "Resource",
+      "probability": "High" or "Medium" or "Low",
+      "impact": "High" or "Medium" or "Low",
+      "severity": "High" or "Medium" or "Low",
+      "mitigation_strategy": "recommended mitigation grounded in context",
+      "owner": "assigned person/role or Unassigned",
+      "status": "Open"
+    }}
+  ],
+  "action_items": [
+    {{
+      "id": "ACT-1",
+      "task": "description of task or decision needed",
+      "item_type": "Blocker" or "Action Item" or "Pending Decision",
+      "priority": "High" or "Medium" or "Low",
+      "assignee": "assigned person or null",
+      "status": "Open",
+      "due_date_or_sprint": "timeline info if mentioned, else null"
+    }}
+  ],
+  "generated_summary": "Short overall summary of the generated project artifacts"
+}}
+If the document does not contain enough detail for a section, return an empty list for that key rather than inventing facts.
+"""
