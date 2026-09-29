@@ -1500,6 +1500,14 @@
                         Run intelligence analysis
                     </button>
 
+                    <button
+                        class="action-button"
+                        id="runDocGenBtn"
+                        style="border-color: var(--amber); color: var(--amber);"
+                    >
+                        Generate Documentation
+                    </button>
+
                 </div>
 
                 <div
@@ -2717,6 +2725,102 @@
 
 
     runAgentsBtn.addEventListener("click", runAgentAnalysis);
+
+    // ================= MILESTONE 3: DOC GEN =================
+    const runDocGenBtn = document.getElementById("runDocGenBtn");
+
+    function renderDocGenResults(data) {
+        const userStories = data.user_stories || [];
+        const riskRegister = data.risk_register || [];
+        const actionItems = data.action_items || [];
+        const summary = data.generated_summary || "";
+
+        let html = "";
+
+        if (summary) {
+            html += `<div class="agent-card"><h3>Generated Summary</h3><div class="agent-forecast">${escapeHTML(summary)}</div></div>`;
+        }
+
+        // User Stories Card
+        html += `<div class="agent-card"><h3>User Stories (${userStories.length})</h3>`;
+        if (userStories.length) {
+            html += `<ul>${userStories.map(us =>
+                `<li><strong>[${escapeHTML(us.id || "US")}] ${escapeHTML(us.title || "")}</strong> 
+                 <span class="badge ${severityBadgeClass(us.priority)}">${escapeHTML(us.priority || "Medium")}</span>
+                 ${us.estimated_story_points ? `<span class="badge">${us.estimated_story_points} pts</span>` : ""}<br>
+                 <em>As a ${escapeHTML(us.as_a || "user")}, I want ${escapeHTML(us.i_want || "")}, so that ${escapeHTML(us.so_that || "")}.</em><br>
+                 <small style="color: var(--muted);">Acceptance Criteria: ${us.acceptance_criteria ? us.acceptance_criteria.map(c => escapeHTML(c)).join("; ") : "None"}</small></li>`
+            ).join("")}</ul>`;
+        } else {
+            html += `<p style="color: var(--muted); font-size: 13px;">No user stories generated from this document.</p>`;
+        }
+        html += `</div>`;
+
+        // Risk Register Card
+        html += `<div class="agent-card"><h3>Risk Register (${riskRegister.length})</h3>`;
+        if (riskRegister.length) {
+            html += `<ul>${riskRegister.map(r =>
+                `<li><strong>[${escapeHTML(r.risk_id || "RSK")}] ${escapeHTML(r.risk_description || "")}</strong>
+                 <span class="badge ${severityBadgeClass(r.severity)}">${escapeHTML(r.severity || "Medium")}</span>
+                 <span class="badge">${escapeHTML(r.category || "General")}</span><br>
+                 <strong>Mitigation:</strong> ${escapeHTML(r.mitigation_strategy || "N/A")} <em>(Owner: ${escapeHTML(r.owner || "Unassigned")})</em></li>`
+            ).join("")}</ul>`;
+        } else {
+            html += `<p style="color: var(--muted); font-size: 13px;">No risks in register.</p>`;
+        }
+        html += `</div>`;
+
+        // Structured Action Items Card
+        html += `<div class="agent-card"><h3>Structured Action Items (${actionItems.length})</h3>`;
+        if (actionItems.length) {
+            html += `<ul>${actionItems.map(a =>
+                `<li><strong>[${escapeHTML(a.id || "ACT")}] ${escapeHTML(a.task || "")}</strong>
+                 <span class="badge ${itemTypeBadgeClass(a.item_type)}">${escapeHTML(a.item_type || "Action Item")}</span>
+                 <span class="badge ${severityBadgeClass(a.priority)}">${escapeHTML(a.priority || "Medium")}</span>
+                 ${a.assignee ? ` — <em>${escapeHTML(a.assignee)}</em>` : ""}</li>`
+            ).join("")}</ul>`;
+        } else {
+            html += `<p style="color: var(--muted); font-size: 13px;">No structured action items found.</p>`;
+        }
+        html += `</div>`;
+
+        agentsResults.innerHTML = html;
+    }
+
+    async function runDocGenAnalysis() {
+        const source = agentSourceSelect.value;
+        if (!source) {
+            agentsStatus.textContent = "Select a document first.";
+            agentsStatus.classList.add("error");
+            return;
+        }
+
+        agentsStatus.classList.remove("error");
+        agentsStatus.textContent = "Generating User Stories, Risk Register & Action Items…";
+        runDocGenBtn.disabled = true;
+
+        try {
+            const response = await fetch(`${API_BASE}/agents/documentation/${encodeURIComponent(source)}`);
+            if (!response.ok) {
+                const errorBody = await response.json().catch(() => ({}));
+                throw new Error(errorBody.detail || `Documentation generation failed (${response.status})`);
+            }
+
+            const data = await response.json();
+            renderDocGenResults(data);
+            agentsStatus.textContent = `Documentation generated successfully for ${source}`;
+        } catch (error) {
+            console.error("Doc gen error:", error);
+            agentsStatus.textContent = error.message || "Documentation generation failed.";
+            agentsStatus.classList.add("error");
+        } finally {
+            runDocGenBtn.disabled = false;
+        }
+    }
+
+    if (runDocGenBtn) {
+        runDocGenBtn.addEventListener("click", runDocGenAnalysis);
+    }
 
     // Populate the document picker on page load
     loadAgentSources();
