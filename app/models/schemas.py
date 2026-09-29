@@ -82,3 +82,63 @@ class AgentAnalysisResponse(BaseModel):
     scope: ScopeExtractionResponse
     risks: RiskDetectionResponse
     blockers: BlockerExtractionResponse
+
+
+# ---------------------------------------------------------------------------
+# Milestone 3: Task 1 - Documentation Generation schemas
+# ---------------------------------------------------------------------------
+
+class UserStory(BaseModel):
+    id: str
+    title: str
+    as_a: str
+    i_want: str
+    so_that: str
+    acceptance_criteria: List[str]
+    priority: Optional[str] = "Medium"
+    estimated_story_points: Optional[int] = None
+
+
+class UserStoriesResponse(BaseModel):
+    source: str
+    user_stories: List[UserStory]
+
+
+class RiskRegisterEntry(BaseModel):
+    risk_id: str
+    risk_description: str
+    category: str
+    probability: str
+    impact: str
+    severity: str
+    mitigation_strategy: str
+    owner: Optional[str] = "Unassigned"
+    status: Optional[str] = "Open"
+
+
+class RiskRegisterResponse(BaseModel):
+    source: str
+    risk_register: List[RiskRegisterEntry]
+
+
+class StructuredActionItem(BaseModel):
+    id: str
+    task: str
+    item_type: str
+    priority: str
+    assignee: Optional[str] = None
+    status: str = "Open"
+    due_date_or_sprint: Optional[str] = None
+
+
+class ActionItemsResponse(BaseModel):
+    source: str
+    action_items: List[StructuredActionItem]
+
+
+class DocumentationGenerationResponse(BaseModel):
+    source: str
+    user_stories: List[UserStory]
+    risk_register: List[RiskRegisterEntry]
+    action_items: List[StructuredActionItem]
+    generated_summary: Optional[str] = None

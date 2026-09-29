@@ -12,11 +12,13 @@ from app.agents.llm_client import LLMNotConfiguredError
 from app.agents.scope_agent import extract_scope
 from app.agents.risk_agent import detect_risks
 from app.agents.blocker_agent import extract_blockers
+from app.agents.doc_agent import generate_documentation
 from app.models.schemas import (
     ScopeExtractionResponse,
     RiskDetectionResponse,
     BlockerExtractionResponse,
     AgentAnalysisResponse,
+    DocumentationGenerationResponse,
 )
 
 router = APIRouter()
@@ -50,6 +52,13 @@ async def get_risks(source: str):
 async def get_blockers(source: str):
     """Blocker and Action Item Identification Agent."""
     return _handle_agent_errors(extract_blockers, source)
+
+
+@router.get("/agents/documentation/{source}", response_model=DocumentationGenerationResponse)
+async def get_documentation(source: str):
+    """Documentation Generation Agent (User Stories, Risk Register, Action Items)."""
+    return _handle_agent_errors(generate_documentation, source)
+
 
 
 @router.get("/agents/analyze/{source}", response_model=AgentAnalysisResponse)
