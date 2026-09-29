@@ -13,6 +13,7 @@ from app.agents.scope_agent import extract_scope
 from app.agents.risk_agent import detect_risks
 from app.agents.blocker_agent import extract_blockers
 from app.agents.doc_agent import generate_documentation
+from app.rag.vector_store import list_sources
 from app.models.schemas import (
     ScopeExtractionResponse,
     RiskDetectionResponse,
@@ -78,9 +79,6 @@ async def analyze_document(source: str):
         risks=risks,
         blockers=blockers,
     )
-
-
-from app.rag.vector_store import list_sources
 
 
 @router.get("/documents")
