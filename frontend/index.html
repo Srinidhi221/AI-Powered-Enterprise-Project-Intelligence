@@ -1378,13 +1378,31 @@
                 </div>
 
 
-                <button
-                    class="action-button"
-                    id="queryBtn"
-                >
-                    Search knowledge
-                </button>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button
+                        class="action-button"
+                        id="queryBtn"
+                        style="flex: 1;"
+                    >
+                        Search raw passages
+                    </button>
 
+                    <button
+                        class="action-button"
+                        id="chatBtn"
+                        style="flex: 1; border-color: #6366f1; color: #818cf8; background: rgba(99,102,241,0.1);"
+                    >
+                        🤖 Ask AI Assistant
+                    </button>
+                </div>
+
+                <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 6px;" id="promptShortcuts">
+                    <span style="font-size: 11px; color: var(--muted); align-self: center; margin-right: 4px;">Quick questions:</span>
+                    <button class="badge" style="cursor: pointer; background: rgba(255,255,255,0.05);" onclick="fillAndAsk('Are we on track with current deadlines?')">Are we on track?</button>
+                    <button class="badge" style="cursor: pointer; background: rgba(255,255,255,0.05);" onclick="fillAndAsk('What are our top project risks?')">What are top risks?</button>
+                    <button class="badge" style="cursor: pointer; background: rgba(255,255,255,0.05);" onclick="fillAndAsk('What blockers or pending decisions exist?')">Open blockers?</button>
+                    <button class="badge" style="cursor: pointer; background: rgba(255,255,255,0.05);" onclick="fillAndAsk('List all main deliverables and milestones.')">Deliverables?</button>
+                </div>
             </div>
 
         </section>
@@ -2138,8 +2156,19 @@
 
 
     /* =========================================================
-       QUERY
+       QUERY & CONVERSATIONAL ASSISTANT
     ========================================================= */
+
+    const chatBtn = document.getElementById("chatBtn");
+
+    if (chatBtn) {
+        chatBtn.addEventListener("click", askAssistant);
+    }
+
+    function fillAndAsk(text) {
+        queryInput.value = text;
+        askAssistant();
+    }
 
     queryBtn.addEventListener(
         "click",
@@ -2158,12 +2187,99 @@
 
                 event.preventDefault();
 
-                searchKnowledge();
+                askAssistant();
 
             }
 
         }
     );
+
+    async function askAssistant() {
+        const question = queryInput.value.trim();
+        if (!question) {
+            queryInput.focus();
+            return;
+        }
+
+        setBusy("AI Assistant synthesizing grounded answer…");
+        if (chatBtn) chatBtn.disabled = true;
+        queryBtn.disabled = true;
+
+        resultsContainer.innerHTML = `
+            <div class="empty">
+                🤖 <strong>AI Assistant is thinking…</strong><br><br>
+                Retrieving relevant project passages & synthesizing answer grounded in context.
+            </div>
+        `;
+
+        resultCount.textContent = "synthesizing";
+
+        try {
+            const response = await fetch(`${API_BASE}/chat`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ question: question, top_k: 5 })
+            });
+
+            if (!response.ok) {
+                const errorBody = await response.json().catch(() => ({}));
+                throw new Error(errorBody.detail || `Assistant request failed (${response.status})`);
+            }
+
+            const data = await response.json();
+            renderAssistantChatResponse(data);
+        } catch (error) {
+            console.error("Assistant chat error:", error);
+            resultCount.textContent = "error";
+            resultsContainer.innerHTML = `
+                <div class="empty error-box">
+                    <strong>Assistant query failed.</strong><br><br>
+                    ${escapeHTML(error.message)}
+                </div>
+            `;
+        } finally {
+            if (chatBtn) chatBtn.disabled = false;
+            queryBtn.disabled = false;
+            setReady();
+        }
+    }
+
+    function renderAssistantChatResponse(data) {
+        const question = data.question || "";
+        const answer = data.answer || "No answer generated.";
+        const sources = data.sources || [];
+
+        resultCount.textContent = `${sources.length} sources cited`;
+
+        let html = `
+            <div class="agent-card" style="border-left: 4px solid #6366f1; background: rgba(99,102,241,0.03); margin-bottom: 15px;">
+                <div style="font-size: 13px; color: #818cf8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">
+                    🤖 AI Project Intelligence Assistant Answer
+                </div>
+                <div style="font-size: 15px; line-height: 1.6; white-space: pre-line; color: var(--fg);">
+                    ${escapeHTML(answer)}
+                </div>
+            </div>
+        `;
+
+        if (sources.length) {
+            html += `<h4 style="margin: 15px 0 10px 0; font-size: 13px; color: var(--muted); text-transform: uppercase;">Grounded Source Passages (${sources.length})</h4>`;
+            sources.forEach((s, idx) => {
+                html += `
+                    <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.07); padding: 10px 14px; border-radius: 6px; margin-bottom: 8px;">
+                        <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+                            <strong>[Passage ${idx + 1}] ${escapeHTML(s.source)} (Chunk #${s.chunk_id})</strong>
+                            <span class="badge" style="background: rgba(99,102,241,0.2); color: #818cf8;">Relevance: ${Math.round(s.relevance_score * 100)}%</span>
+                        </div>
+                        <small style="color: var(--muted); font-family: monospace;">"${escapeHTML(s.text_snippet)}"</small>
+                    </div>
+                `;
+            });
+        }
+
+        resultsContainer.innerHTML = html;
+    }
+
 
 
     async function searchKnowledge() {
