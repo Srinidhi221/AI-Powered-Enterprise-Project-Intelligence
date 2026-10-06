@@ -162,4 +162,27 @@ class ProjectHealthResponse(BaseModel):
     summary: str
     dimensions: List[HealthDimension]
     recommendations: List[str]
+
+
+# ---------------------------------------------------------------------------
+# Milestone 3: Task 3 - Conversational Assistant schemas
+# ---------------------------------------------------------------------------
+
+class ChatRequest(BaseModel):
+    question: str
+    top_k: int = 5
+
+
+class ChatSourceCitation(BaseModel):
+    source: str
+    chunk_id: int
+    relevance_score: float
+    text_snippet: str
+
+
+class ChatResponse(BaseModel):
+    question: str
+    answer: str
+    sources: List[ChatSourceCitation]
+
 
