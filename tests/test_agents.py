@@ -81,6 +81,18 @@ def validate_file(filename):
         check("Blocker agent", False, f"- ERROR: {e}")
     time.sleep(2)
 
+    try:
+        from app.agents.health_agent import calculate_project_health
+        health_result = calculate_project_health(filename)
+        ok = health_result.source == filename and 0 <= health_result.overall_score <= 100
+        check("Health agent", ok,
+              f"- score: {health_result.overall_score}, status: {health_result.health_status}, "
+              f"dimensions: {len(health_result.dimensions)}")
+    except Exception as e:
+        check("Health agent", False, f"- ERROR: {e}")
+    time.sleep(2)
+
+
 
 # --- Discover and validate every sample file ---
 sample_files = sorted(

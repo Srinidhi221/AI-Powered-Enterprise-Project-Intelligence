@@ -13,6 +13,7 @@ from app.agents.scope_agent import extract_scope
 from app.agents.risk_agent import detect_risks
 from app.agents.blocker_agent import extract_blockers
 from app.agents.doc_agent import generate_documentation
+from app.agents.health_agent import calculate_project_health
 from app.rag.vector_store import list_sources
 from app.models.schemas import (
     ScopeExtractionResponse,
@@ -20,9 +21,11 @@ from app.models.schemas import (
     BlockerExtractionResponse,
     AgentAnalysisResponse,
     DocumentationGenerationResponse,
+    ProjectHealthResponse,
 )
 
 router = APIRouter()
+
 
 
 def _handle_agent_errors(fn, *args):
@@ -59,6 +62,13 @@ async def get_blockers(source: str):
 async def get_documentation(source: str):
     """Documentation Generation Agent (User Stories, Risk Register, Action Items)."""
     return _handle_agent_errors(generate_documentation, source)
+
+
+@router.get("/agents/health/{source}", response_model=ProjectHealthResponse)
+async def get_health(source: str):
+    """Project Health Scoring Module."""
+    return _handle_agent_errors(calculate_project_health, source)
+
 
 
 

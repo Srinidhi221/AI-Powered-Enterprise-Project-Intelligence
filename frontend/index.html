@@ -1508,6 +1508,14 @@
                         Generate Documentation
                     </button>
 
+                    <button
+                        class="action-button"
+                        id="runHealthScoreBtn"
+                        style="border-color: #10b981; color: #10b981;"
+                    >
+                        Calculate Health Score
+                    </button>
+
                 </div>
 
                 <div
@@ -2820,6 +2828,96 @@
 
     if (runDocGenBtn) {
         runDocGenBtn.addEventListener("click", runDocGenAnalysis);
+    }
+
+    // ================= MILESTONE 3: PROJECT HEALTH SCORING =================
+    const runHealthScoreBtn = document.getElementById("runHealthScoreBtn");
+
+    function renderHealthScoreResults(data) {
+        const score = data.overall_score || 0;
+        const status = data.health_status || "Unknown";
+        const summary = data.summary || "";
+        const dimensions = data.dimensions || [];
+        const recommendations = data.recommendations || [];
+
+        let statusClass = "high";
+        if (score < 50) statusClass = "high"; // severe risk
+        else if (score < 80) statusClass = "medium";
+        else statusClass = "low";
+
+        let html = `
+            <div class="agent-card" style="border-left: 4px solid #10b981;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h3>Overall Project Health Score</h3>
+                    <span class="badge ${statusClass}" style="font-size: 16px; padding: 6px 14px;">
+                        ${score}/100 — ${escapeHTML(status)}
+                    </span>
+                </div>
+                <p style="margin-top: 10px; font-size: 14px; line-height: 1.5;">${escapeHTML(summary)}</p>
+            </div>
+
+            <div class="agent-card">
+                <h3>Dimension Breakdown</h3>
+                <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+                    ${dimensions.map(d => {
+                        let dimClass = d.score >= 80 ? 'low' : d.score >= 60 ? 'medium' : 'high';
+                        return `
+                            <div style="background: rgba(255,255,255,0.03); padding: 10px 14px; border-radius: 6px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                    <strong>${escapeHTML(d.dimension)}</strong>
+                                    <span class="badge ${dimClass}">${d.score}/100 — ${escapeHTML(d.status)}</span>
+                                </div>
+                                <small style="color: var(--muted);">${escapeHTML(d.summary)}</small>
+                            </div>
+                        `;
+                    }).join("")}
+                </div>
+            </div>
+
+            <div class="agent-card">
+                <h3>Actionable Recommendations (${recommendations.length})</h3>
+                <ul style="margin-top: 8px;">
+                    ${recommendations.map(r => `<li>${escapeHTML(r)}</li>`).join("")}
+                </ul>
+            </div>
+        `;
+
+        agentsResults.innerHTML = html;
+    }
+
+    async function runHealthScoreAnalysis() {
+        const source = agentSourceSelect.value;
+        if (!source) {
+            agentsStatus.textContent = "Select a document first.";
+            agentsStatus.classList.add("error");
+            return;
+        }
+
+        agentsStatus.classList.remove("error");
+        agentsStatus.textContent = "Calculating Project Health Score & Dimensions…";
+        runHealthScoreBtn.disabled = true;
+
+        try {
+            const response = await fetch(`${API_BASE}/agents/health/${encodeURIComponent(source)}`);
+            if (!response.ok) {
+                const errorBody = await response.json().catch(() => ({}));
+                throw new Error(errorBody.detail || `Health calculation failed (${response.status})`);
+            }
+
+            const data = await response.json();
+            renderHealthScoreResults(data);
+            agentsStatus.textContent = `Project Health evaluated successfully for ${source}`;
+        } catch (error) {
+            console.error("Health scoring error:", error);
+            agentsStatus.textContent = error.message || "Project Health scoring failed.";
+            agentsStatus.classList.add("error");
+        } finally {
+            runHealthScoreBtn.disabled = false;
+        }
+    }
+
+    if (runHealthScoreBtn) {
+        runHealthScoreBtn.addEventListener("click", runHealthScoreAnalysis);
     }
 
     // Populate the document picker on page load

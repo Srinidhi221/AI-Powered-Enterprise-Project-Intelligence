@@ -139,4 +139,50 @@ Respond with ONLY a JSON object (no markdown, no commentary) matching this exact
   "generated_summary": "Short overall summary of the generated project artifacts"
 }}
 If the document does not contain enough detail for a section, return an empty list for that key rather than inventing facts.
-"""
+"""
+
+HEALTH_SCORING_PROMPT = """
+You are an expert AI Project Manager evaluating project health from ingested project documentation.
+Analyze the provided document context carefully and compute a structured Project Health Score.
+
+Assess 3 core dimensions:
+1. "Scope Clarity": How well-defined are the goals, deliverables, requirements, and boundaries? (0-100 score, status: "Healthy" | "Needs Attention" | "At Risk" | "Critical")
+2. "Timeline Risk": Are there schedule delays, tight deadlines, dependency gaps, or delivery risks? (0-100 score where 100 = minimal risk/healthy, 0 = severe delays)
+3. "Blocker & Action Item Severity": Are there active blockers, pending decisions, or unassigned action items? (0-100 score where 100 = clear path/healthy, 0 = severe blockers)
+
+Compute an overall project health score (0-100) and overall status ("Healthy" for 80-100, "Needs Attention" for 60-79, "At Risk" for 40-59, "Critical" for 0-39).
+Provide 3-5 actionable recommendations to improve project health grounded in the document context.
+
+Respond with ONLY a JSON object (no markdown, no commentary) matching this exact shape:
+{{
+  "overall_score": 75,
+  "health_status": "Needs Attention",
+  "summary": "2-3 sentence executive summary of overall project health.",
+  "dimensions": [
+    {{
+      "dimension": "Scope Clarity",
+      "score": 85,
+      "status": "Healthy",
+      "summary": "Summary of scope clarity findings."
+    }},
+    {{
+      "dimension": "Timeline Risk",
+      "score": 65,
+      "status": "Needs Attention",
+      "summary": "Summary of timeline risk findings."
+    }},
+    {{
+      "dimension": "Blocker Severity",
+      "score": 70,
+      "status": "Needs Attention",
+      "summary": "Summary of blocker severity findings."
+    }}
+  ],
+  "recommendations": [
+    "Actionable recommendation 1",
+    "Actionable recommendation 2",
+    "Actionable recommendation 3"
+  ]
+}}
+"""
+

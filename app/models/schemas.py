@@ -141,4 +141,25 @@ class DocumentationGenerationResponse(BaseModel):
     user_stories: List[UserStory]
     risk_register: List[RiskRegisterEntry]
     action_items: List[StructuredActionItem]
-    generated_summary: Optional[str] = None
+    generated_summary: Optional[str] = None
+
+
+# ---------------------------------------------------------------------------
+# Milestone 3: Task 2 - Project Health Scoring schemas
+# ---------------------------------------------------------------------------
+
+class HealthDimension(BaseModel):
+    dimension: str
+    score: int
+    status: str
+    summary: str
+
+
+class ProjectHealthResponse(BaseModel):
+    source: str
+    overall_score: int
+    health_status: str
+    summary: str
+    dimensions: List[HealthDimension]
+    recommendations: List[str]
+
