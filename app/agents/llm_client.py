@@ -136,3 +136,19 @@ def call_json(system_prompt: str, user_prompt: str) -> Dict[str, Any]:
         return json.loads(raw)
     except json.JSONDecodeError as e:
         raise ValueError(f"LLM did not return valid JSON: {e}\nRaw output:\n{raw}")
+
+
+def call_text(system_prompt: str, user_prompt: str) -> str:
+    """Send system and user prompts to LLM and return text string response."""
+    client = get_client()
+
+    response = client.chat.completions.create(
+        model=GROQ_MODEL,
+        temperature=AGENT_TEMPERATURE,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt},
+        ],
+    )
+
+    return response.choices[0].message.content.strip()
