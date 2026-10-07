@@ -6,61 +6,39 @@ export const MilestoneTimeline: React.FC = () => {
   const { milestones } = useProject();
 
   return (
-    <div className="p-6 rounded-2xl bg-surface border border-card-border shadow-card space-y-4">
-      <div className="flex items-center justify-between pb-3 border-b border-border">
+    <div className="py-4 border-b border-border space-y-4">
+      <div className="flex items-center justify-between pb-2 border-b border-border">
         <div className="flex items-center gap-2">
           <Calendar className="w-4 h-4 text-brand-500" />
-          <h3 className="text-sm font-bold text-text-primary">Full-Width Milestone Timeline (Gantt View)</h3>
+          <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider">Milestone Schedule Timeline</h3>
         </div>
         <span className="text-xs text-text-muted font-mono">
           4 Scheduled Milestones
         </span>
       </div>
 
-      {/* Horizontal Gantt Bar Container */}
-      <div className="relative pt-6 pb-2">
-        <div className="absolute top-1/2 left-0 w-full h-1 bg-border -translate-y-1/2 z-0" />
-
-        <div className="grid grid-cols-4 gap-4 relative z-10">
-          {milestones.map((ms, idx) => (
-            <div
-              key={ms.id}
-              className={`p-4 rounded-xl border bg-surface transition-all ${
-                ms.isAtRisk
-                  ? 'border-status-warning shadow-xs'
-                  : ms.status === 'completed'
-                  ? 'border-status-healthy/40'
-                  : 'border-border'
-              }`}
-            >
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] font-mono font-bold text-text-muted uppercase">
-                  MS 0{idx + 1}
-                </span>
-                {ms.status === 'completed' ? (
-                  <CheckCircle2 className="w-4 h-4 text-status-healthy" />
-                ) : ms.isAtRisk ? (
-                  <AlertTriangle className="w-4 h-4 text-status-warning" />
-                ) : (
-                  <Clock className="w-4 h-4 text-brand-500" />
-                )}
-              </div>
-
-              <h4 className="text-xs font-bold text-text-primary leading-snug">
-                {ms.name}
-              </h4>
-              <span className="text-[11px] font-mono text-text-muted mt-1 block">
-                Target Date: {ms.date}
-              </span>
-
-              {ms.isAtRisk && (
-                <div className="mt-2 p-2 rounded bg-status-warningBg border border-status-warning/20 text-[10px] text-status-warning">
-                  ⚠️ {ms.riskReason}
-                </div>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 pt-2">
+        {milestones.map((ms, idx) => (
+          <div key={ms.id} className="space-y-1.5 pl-3 border-l-2 border-border hover:border-brand-500 transition-colors">
+            <div className="flex items-center justify-between text-[11px] font-mono">
+              <span className="font-bold text-text-muted">MS 0{idx + 1}</span>
+              {ms.status === 'completed' ? (
+                <span className="text-status-healthy font-bold">✓ COMPLETED</span>
+              ) : ms.isAtRisk ? (
+                <span className="text-status-warning font-bold">⚠️ AT RISK</span>
+              ) : (
+                <span className="text-brand-500 font-bold">IN PROGRESS</span>
               )}
             </div>
-          ))}
-        </div>
+
+            <h4 className="text-xs font-bold text-text-primary leading-snug">
+              {ms.name}
+            </h4>
+            <span className="text-[11px] font-mono text-text-muted block">
+              Target: {ms.date}
+            </span>
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -1,22 +1,23 @@
 import React from 'react';
 import {
   Search,
-  PlusCircle,
+  Plus,
   MessageSquare,
   Bell,
   Sun,
   Moon,
   Laptop,
   ChevronDown,
-  Sparkles,
-  Layers
+  Settings,
+  Sparkles
 } from 'lucide-react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { useTheme } from '../../context/ThemeContext';
 import { useProject } from '../../context/ProjectContext';
+import { useNavigate } from 'react-router-dom';
 
 export const TopBar: React.FC = () => {
-  const { theme, setTheme, density, setDensity } = useTheme();
+  const { theme, setTheme } = useTheme();
   const {
     projects,
     activeProject,
@@ -25,79 +26,70 @@ export const TopBar: React.FC = () => {
     setIsChatDrawerOpen,
     setIsSearchOpen
   } = useProject();
+  const navigate = useNavigate();
 
   return (
-    <header className="h-16 bg-surface border-b border-border px-6 flex items-center justify-between shrink-0 z-30">
-      {/* Left: Project Switcher */}
+    <header className="h-14 bg-surface border-b border-border px-6 flex items-center justify-between shrink-0 z-30">
+      {/* Left: Project Selector & Metadata */}
       <div className="flex items-center gap-4">
         <DropdownMenu.Root>
           <DropdownMenu.Trigger asChild>
-            <button className="flex items-center gap-2.5 px-3 py-1.5 rounded-lg border border-border bg-background hover:bg-surface-hover text-text-primary text-xs font-semibold transition-colors focus:outline-none">
-              <div className="w-2.5 h-2.5 rounded-full bg-status-warning animate-pulse" />
+            <button className="flex items-center gap-2 text-sm font-semibold text-text-primary hover:text-brand-500 transition-colors focus:outline-none">
               <span>{activeProject.name}</span>
-              <ChevronDown className="w-3.5 h-3.5 text-text-muted" />
+              <ChevronDown className="w-4 h-4 text-text-muted" />
             </button>
           </DropdownMenu.Trigger>
           <DropdownMenu.Portal>
-            <DropdownMenu.Content className="w-64 bg-surface border border-card-border rounded-xl p-1.5 shadow-dropdown z-50 animate-slide-up focus:outline-none">
-              <DropdownMenu.Label className="px-2 py-1 text-[10px] font-semibold text-text-muted uppercase tracking-wider">
+            <DropdownMenu.Content className="w-56 bg-surface border border-border rounded-lg p-1 shadow-dropdown z-50 focus:outline-none">
+              <DropdownMenu.Label className="px-2 py-1 text-[10px] font-bold text-text-muted uppercase tracking-wider">
                 Select Active Project
               </DropdownMenu.Label>
               {projects.map(p => (
                 <DropdownMenu.Item
                   key={p.id}
                   onClick={() => setActiveProject(p)}
-                  className={`flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-medium cursor-pointer transition-colors ${
-                    p.id === activeProject.id
-                      ? 'bg-brand-50 text-brand-600 dark:bg-brand-50/20 dark:text-brand-500 font-semibold'
-                      : 'text-text-primary hover:bg-surface-hover'
+                  className={`flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs font-medium cursor-pointer ${
+                    p.id === activeProject.id ? 'bg-brand-50 text-brand-600 dark:bg-brand-50/20 dark:text-brand-500 font-semibold' : 'text-text-primary hover:bg-surface-hover'
                   }`}
                 >
-                  <div className="flex items-center gap-2">
-                    <span className="truncate">{p.name}</span>
-                  </div>
-                  <span className="font-mono text-[11px] px-1.5 py-0.5 rounded bg-surface border border-border">
-                    {p.healthScore}/100
-                  </span>
+                  <span>{p.name}</span>
+                  <span className="font-mono text-[10px] text-text-muted">{p.healthScore}/100</span>
                 </DropdownMenu.Item>
               ))}
             </DropdownMenu.Content>
           </DropdownMenu.Portal>
         </DropdownMenu.Root>
 
-        <span className="text-xs text-text-muted hidden md:inline-flex items-center gap-1.5">
-          <span>Last updated:</span>
-          <span className="font-mono text-text-secondary">{activeProject.lastUpdated}</span>
+        <span className="text-xs text-text-muted hidden md:inline font-mono">
+          Last updated · {activeProject.lastUpdated}
         </span>
       </div>
 
-      {/* Right: Global Actions */}
-      <div className="flex items-center gap-2.5">
-        {/* Global Search Button */}
+      {/* Right Controls */}
+      <div className="flex items-center gap-3">
+        {/* Search */}
         <button
           onClick={() => setIsSearchOpen(true)}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-background hover:bg-surface-hover text-text-muted hover:text-text-primary text-xs transition-colors"
+          className="flex items-center gap-2 px-2.5 py-1.5 rounded-md border border-border text-xs text-text-muted hover:text-text-primary hover:bg-surface-hover transition-colors"
         >
-          <Search className="w-3.5 h-3.5 text-brand-500" />
-          <span className="hidden sm:inline">Global Search...</span>
-          <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[9px] font-mono bg-surface border border-border rounded text-text-muted">
-            ⌘K
-          </kbd>
+          <Search className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">Search...</span>
+          <kbd className="hidden sm:inline-block px-1 text-[10px] font-mono border border-border rounded">⌘K</kbd>
         </button>
 
-        {/* Add Update Button */}
+        {/* Add Update */}
         <button
           onClick={() => setIsAddUpdateOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-500 text-white hover:bg-brand-600 text-xs font-semibold shadow-xs transition-colors"
+          className="px-3 py-1.5 rounded-md bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold transition-colors flex items-center gap-1.5"
         >
-          <PlusCircle className="w-3.5 h-3.5" />
+          <Plus className="w-3.5 h-3.5" />
           <span>Add Update</span>
         </button>
 
-        {/* Ask AI Chat Button */}
+        {/* Ask AI */}
         <button
           onClick={() => setIsChatDrawerOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-brand-500/30 bg-brand-50 dark:bg-brand-50/10 text-brand-600 dark:text-brand-500 hover:bg-brand-100 text-xs font-semibold transition-colors"
+          className="px-3 py-1.5 rounded-md border border-brand-500/30 text-brand-600 dark:text-brand-500 hover:bg-brand-50 text-xs font-semibold transition-colors flex items-center gap-1.5"
         >
           <Sparkles className="w-3.5 h-3.5" />
           <span>Ask AI</span>
@@ -105,63 +97,38 @@ export const TopBar: React.FC = () => {
 
         {/* Notifications */}
         <button
-          className="p-2 rounded-lg border border-border bg-background hover:bg-surface-hover text-text-secondary hover:text-text-primary transition-colors relative"
+          className="p-1.5 rounded-md hover:bg-surface-hover text-text-muted hover:text-text-primary transition-colors relative"
           title="Notifications"
         >
           <Bell className="w-4 h-4" />
-          <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-status-critical" />
         </button>
 
-        {/* Layout Density Toggle */}
+        {/* Settings */}
         <button
-          onClick={() => setDensity(density === 'comfortable' ? 'compact' : 'comfortable')}
-          className="p-2 rounded-lg border border-border bg-background hover:bg-surface-hover text-text-secondary hover:text-text-primary transition-colors"
-          title={`Density mode: ${density}. Click to toggle.`}
+          onClick={() => navigate('/settings')}
+          className="p-1.5 rounded-md hover:bg-surface-hover text-text-muted hover:text-text-primary transition-colors"
+          title="Settings"
         >
-          <Layers className="w-4 h-4" />
+          <Settings className="w-4 h-4" />
         </button>
 
-        {/* Theme Switcher Dropdown */}
+        {/* Theme Toggle */}
         <DropdownMenu.Root>
           <DropdownMenu.Trigger asChild>
-            <button className="p-2 rounded-lg border border-border bg-background hover:bg-surface-hover text-text-secondary hover:text-text-primary transition-colors focus:outline-none">
-              {theme === 'dark' ? (
-                <Moon className="w-4 h-4 text-brand-500" />
-              ) : theme === 'light' ? (
-                <Sun className="w-4 h-4 text-status-warning" />
-              ) : (
-                <Laptop className="w-4 h-4 text-brand-500" />
-              )}
+            <button className="p-1.5 rounded-md hover:bg-surface-hover text-text-muted hover:text-text-primary transition-colors focus:outline-none">
+              {theme === 'dark' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
             </button>
           </DropdownMenu.Trigger>
           <DropdownMenu.Portal>
-            <DropdownMenu.Content className="w-36 bg-surface border border-card-border rounded-xl p-1 shadow-dropdown z-50 animate-slide-up focus:outline-none">
-              <DropdownMenu.Item
-                onClick={() => setTheme('light')}
-                className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs font-medium cursor-pointer ${
-                  theme === 'light' ? 'bg-brand-50 text-brand-600 dark:bg-brand-50/20 dark:text-brand-500 font-semibold' : 'text-text-primary hover:bg-surface-hover'
-                }`}
-              >
-                <Sun className="w-3.5 h-3.5 text-status-warning" />
-                <span>Light</span>
+            <DropdownMenu.Content className="w-32 bg-surface border border-border rounded-lg p-1 shadow-dropdown z-50">
+              <DropdownMenu.Item onClick={() => setTheme('light')} className="px-2 py-1 text-xs text-text-primary hover:bg-surface-hover cursor-pointer">
+                Light Mode
               </DropdownMenu.Item>
-              <DropdownMenu.Item
-                onClick={() => setTheme('dark')}
-                className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs font-medium cursor-pointer ${
-                  theme === 'dark' ? 'bg-brand-50 text-brand-600 dark:bg-brand-50/20 dark:text-brand-500 font-semibold' : 'text-text-primary hover:bg-surface-hover'
-                }`}
-              >
-                <Moon className="w-3.5 h-3.5 text-brand-500" />
-                <span>Dark</span>
+              <DropdownMenu.Item onClick={() => setTheme('dark')} className="px-2 py-1 text-xs text-text-primary hover:bg-surface-hover cursor-pointer">
+                Dark Mode
               </DropdownMenu.Item>
-              <DropdownMenu.Item
-                onClick={() => setTheme('system')}
-                className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs font-medium cursor-pointer ${
-                  theme === 'system' ? 'bg-brand-50 text-brand-600 dark:bg-brand-50/20 dark:text-brand-500 font-semibold' : 'text-text-primary hover:bg-surface-hover'
-                }`}
-              >
-                <Laptop className="w-3.5 h-3.5 text-text-muted" />
-                <span>System</span>
+              <DropdownMenu.Item onClick={() => setTheme('system')} className="px-2 py-1 text-xs text-text-primary hover:bg-surface-hover cursor-pointer">
+                System Mode
               </DropdownMenu.Item>
             </DropdownMenu.Content>
           </DropdownMenu.Portal>

@@ -39,44 +39,6 @@ export const MOCK_PROJECTS: Project[] = [
       { name: 'Priya Sharma', role: 'DevOps Engineer', email: 'priya.s@enterprise.ai' },
       { name: 'David Miller', role: 'QA Lead', email: 'david.m@enterprise.ai' }
     ]
-  },
-  {
-    id: 'proj-2',
-    name: 'FinTech Risk Engine',
-    description: 'Real-time transaction fraud detection and automated regulatory risk reporting.',
-    healthScore: 84,
-    healthLabel: 'Healthy',
-    healthTrend: 'up',
-    lastUpdated: '2026-10-06 09:15',
-    openRisksCount: 3,
-    blockersCount: 1,
-    actionItemsCount: 5,
-    daysToMilestone: 22,
-    nextMilestoneName: 'Phase 2 Compliance Signoff',
-    summary: 'High scope clarity with solid test coverage. Compliance audit documentation pending final review.',
-    insightChips: ['SOC2 Audit pre-check complete', '1 minor blocker on API rate limits'],
-    teamMembers: [
-      { name: 'Sarah Jenkins', role: 'Product Owner', email: 'sarah.j@enterprise.ai' }
-    ]
-  },
-  {
-    id: 'proj-3',
-    name: 'HealthSync AI',
-    description: 'Clinical trial patient matching platform powered by LLM vector search.',
-    healthScore: 48,
-    healthLabel: 'At Risk',
-    healthTrend: 'down',
-    lastUpdated: '2026-10-05 18:00',
-    openRisksCount: 11,
-    blockersCount: 6,
-    actionItemsCount: 18,
-    daysToMilestone: 7,
-    nextMilestoneName: 'HIPAA Security Verification',
-    summary: 'Critical delays in HIPAA compliance audit and missing data pipeline documentation.',
-    insightChips: ['HIPAA signoff delayed by 2 weeks', 'Resource shortage in data engineering'],
-    teamMembers: [
-      { name: 'Marcus Vance', role: 'Security Officer', email: 'marcus.v@enterprise.ai' }
-    ]
   }
 ];
 
@@ -446,7 +408,7 @@ export const MOCK_CHAT_MESSAGES: ChatMessage[] = [
   {
     id: 'msg-1',
     sender: 'assistant',
-    text: 'Hello! I am your AI Project Intelligence Assistant. I can answer questions grounded directly in your uploaded project documents. Try one of the suggested prompts below or type your question.',
+    text: 'Hello! I am your AI Project Intelligence Assistant. I can answer questions grounded directly in your uploaded project documents. Ask any question below.',
     timestamp: '14:30',
     groundingInfo: 'Grounded in 4 active project documents'
   },
@@ -459,7 +421,7 @@ export const MOCK_CHAT_MESSAGES: ChatMessage[] = [
   {
     id: 'msg-3',
     sender: 'assistant',
-    text: 'Milestone 3 (Q&A Assistant & Verification) is currently **in progress** but flagged **at risk**. \n\nThe main factors impacting delivery timeline are:\n1. **Unassigned Ownership**: Load and integration testing ownership remains unassigned as of Oct 2 notes.\n2. **Cloud SSL Bottleneck**: External domain certificate approval from SecOps takes up to 10 business days.\n\nRecommended next step: Assign a temporary QA lead to prevent schedule slips.',
+    text: 'Milestone 3 (Q&A Assistant & Verification) is currently **in progress** but flagged **at risk**.\n\nThe main factors impacting delivery timeline are:\n1. **Unassigned Ownership**: Load and integration testing ownership remains unassigned as of Oct 2 notes.\n2. **Cloud SSL Bottleneck**: External domain certificate approval from SecOps takes up to 10 business days.\n\nRecommended next step: Assign a temporary QA lead to prevent schedule slips.',
     timestamp: '14:31',
     citations: [
       { docName: 'Meeting_Notes_Oct02.txt', passage: 'David mentioned QA team bandwidth is locked until Oct 20. Ownership of load test suite remains unassigned.' },
