@@ -1,4 +1,4 @@
-# 🚀 AI-Powered Enterprise Project Intelligence & Risk Advisor
+## AI-Powered Enterprise Project Intelligence & Risk Advisor
 
 An end-to-end, multi-agent AI project intelligence, document analysis, and risk advisory platform. The system ingests unstructured project documents (`.pdf`, `.docx`, `.xlsx`, `.csv`, `.txt`), parses and indexes them into a hybrid vector RAG knowledge base, orchestrates specialized AI agents (Scope, Risk, Blocker, Documentation, and Health agents), and provides an executive analytics dashboard.
 
