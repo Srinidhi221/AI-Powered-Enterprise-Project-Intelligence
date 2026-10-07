@@ -6,9 +6,13 @@ import { WhatChangedBanner } from '../common/WhatChangedBanner';
 import { GlobalSearchModal } from '../common/GlobalSearchModal';
 import { IncrementalUpdateModal } from '../common/IncrementalUpdateModal';
 import { RiskDetailDrawer } from '../common/RiskDetailDrawer';
+import { CreateProjectModal } from '../common/CreateProjectModal';
 import { AssistantPanel } from '../chat/AssistantPanel';
+import { useProject } from '../../context/ProjectContext';
 
 export const MainLayout: React.FC = () => {
+  const { isCreateProjectOpen, setIsCreateProjectOpen } = useProject();
+
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-background text-text-primary">
       {/* Sidebar */}
@@ -30,6 +34,10 @@ export const MainLayout: React.FC = () => {
       <GlobalSearchModal />
       <IncrementalUpdateModal />
       <RiskDetailDrawer />
+      <CreateProjectModal
+        isOpen={isCreateProjectOpen}
+        onClose={() => setIsCreateProjectOpen(false)}
+      />
       <AssistantPanel />
     </div>
   );

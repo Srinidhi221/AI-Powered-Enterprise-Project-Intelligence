@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Target, Users, Calendar, AlertTriangle, CheckCircle2, FileText, ArrowRight, Plus, Sparkles, ExternalLink } from 'lucide-react';
 import { useProject } from '../context/ProjectContext';
 import { SourceCitationChip } from '../components/common/SourceCitationChip';
+import { AnimatedCounter } from '../components/common/AnimatedCounter';
 
 export const ScopeDeliverables: React.FC = () => {
   const { deliverables, setIsAddUpdateOpen, setIsChatDrawerOpen } = useProject();
@@ -44,22 +45,22 @@ export const ScopeDeliverables: React.FC = () => {
       <div className="flex flex-wrap items-center gap-8 py-3 border-y border-border text-xs font-medium text-text-secondary">
         <div>
           <span className="text-[11px] font-semibold text-text-muted uppercase block">Total Deliverables</span>
-          <span className="text-xl font-bold text-text-primary font-mono">{deliverables.length}</span>
+          <span className="text-xl font-bold text-text-primary font-mono"><AnimatedCounter value={deliverables.length} /></span>
         </div>
         <div className="h-8 w-px bg-border" />
         <div>
           <span className="text-[11px] font-semibold text-text-muted uppercase block">Completed</span>
-          <span className="text-xl font-bold text-status-healthy font-mono">{completedCount}</span>
+          <span className="text-xl font-bold text-status-healthy font-mono"><AnimatedCounter value={completedCount} /></span>
         </div>
         <div className="h-8 w-px bg-border" />
         <div>
           <span className="text-[11px] font-semibold text-text-muted uppercase block">In Progress</span>
-          <span className="text-xl font-bold text-brand-500 font-mono">{inProgressCount}</span>
+          <span className="text-xl font-bold text-brand-500 font-mono"><AnimatedCounter value={inProgressCount} /></span>
         </div>
         <div className="h-8 w-px bg-border" />
         <div>
           <span className="text-[11px] font-semibold text-text-muted uppercase block">Unassigned</span>
-          <span className="text-xl font-bold text-status-critical font-mono">{unassignedCount}</span>
+          <span className="text-xl font-bold text-status-critical font-mono"><AnimatedCounter value={unassignedCount} /></span>
         </div>
         <div className="h-8 w-px bg-border" />
         <div>

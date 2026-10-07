@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
 import { useProject } from '../../context/ProjectContext';
+import { AnimatedCounter } from '../common/AnimatedCounter';
 
 export const KpiTiles: React.FC = () => {
   const { activeProject } = useProject();
@@ -9,35 +10,40 @@ export const KpiTiles: React.FC = () => {
   const tiles = [
     {
       label: 'Overall Health',
-      value: `${activeProject.healthScore}/100`,
+      num: activeProject.healthScore,
+      suffix: '/100',
       sub: activeProject.healthLabel,
       color: 'text-brand-500',
       path: '/health'
     },
     {
       label: 'Open Risks',
-      value: activeProject.openRisksCount,
+      num: activeProject.openRisksCount,
+      suffix: '',
       sub: '2 High Severity',
       color: 'text-status-critical',
       path: '/risks'
     },
     {
       label: 'Active Blockers',
-      value: activeProject.blockersCount,
+      num: activeProject.blockersCount,
+      suffix: '',
       sub: '1 Overdue Item',
       color: 'text-status-warning',
       path: '/blockers'
     },
     {
       label: 'Action Items',
-      value: activeProject.actionItemsCount,
+      num: activeProject.actionItemsCount,
+      suffix: '',
       sub: '12 Total Items',
       color: 'text-status-info',
       path: '/blockers'
     },
     {
       label: 'Next Milestone',
-      value: `${activeProject.daysToMilestone} Days`,
+      num: activeProject.daysToMilestone,
+      suffix: ' Days',
       sub: activeProject.nextMilestoneName,
       color: 'text-text-primary',
       path: '/scope'
@@ -54,7 +60,7 @@ export const KpiTiles: React.FC = () => {
               <ArrowUpRight className="w-3.5 h-3.5 text-text-muted group-hover:text-brand-500 transition-colors" />
             </div>
             <span className={`text-4xl font-extrabold font-mono tracking-tight block mt-2.5 ${tile.color}`}>
-              {tile.value}
+              <AnimatedCounter value={tile.num} suffix={tile.suffix} />
             </span>
             <span className="text-xs text-text-secondary truncate block mt-1 font-medium">{tile.sub}</span>
           </Link>

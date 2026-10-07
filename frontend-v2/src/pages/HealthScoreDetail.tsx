@@ -2,6 +2,7 @@ import React from 'react';
 import { Activity, TrendingUp, HelpCircle, CheckCircle2, AlertTriangle, ArrowUpRight } from 'lucide-react';
 import { useProject } from '../context/ProjectContext';
 import { SeverityBadge } from '../components/common/SeverityBadge';
+import { AnimatedCounter } from '../components/common/AnimatedCounter';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 
 export const HealthScoreDetail: React.FC = () => {
@@ -22,7 +23,7 @@ export const HealthScoreDetail: React.FC = () => {
         <div className="flex items-center gap-6">
           <div className="w-32 h-32 rounded-3xl bg-gradient-to-tr from-brand-600/20 to-brand-500/10 border-2 border-brand-500/40 flex flex-col items-center justify-center shadow-glow">
             <span className="text-4xl font-extrabold text-brand-500 font-mono tracking-tight">
-              {activeProject.healthScore}
+              <AnimatedCounter value={activeProject.healthScore} />
             </span>
             <span className="text-xs font-mono text-text-muted font-bold uppercase mt-1">
               SCORE / 100
@@ -73,7 +74,7 @@ export const HealthScoreDetail: React.FC = () => {
                 {dim.name} ({dim.weight * 100}% Weight)
               </span>
               <span className="font-mono font-extrabold text-sm text-brand-500">
-                {dim.score}/100
+                <AnimatedCounter value={dim.score} suffix="/100" />
               </span>
             </div>
 

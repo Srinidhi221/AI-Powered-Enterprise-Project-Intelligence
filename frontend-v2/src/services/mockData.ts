@@ -39,6 +39,30 @@ export const MOCK_PROJECTS: Project[] = [
       { name: 'Priya Sharma', role: 'DevOps Engineer', email: 'priya.s@enterprise.ai' },
       { name: 'David Miller', role: 'QA Lead', email: 'david.m@enterprise.ai' }
     ]
+  },
+  {
+    id: 'proj-exhibition',
+    name: 'ExhibitionPlan',
+    description: 'Logistics, staging, booth setup, and contractor risk management for the 2026 Global Tech Expo.',
+    healthScore: 84,
+    healthLabel: 'Healthy',
+    healthTrend: 'up',
+    lastUpdated: '2026-10-07 16:00',
+    openRisksCount: 3,
+    blockersCount: 2,
+    actionItemsCount: 6,
+    daysToMilestone: 22,
+    nextMilestoneName: 'Phase 2 - Pavilion Structural Sign-off',
+    summary: 'ExhibitionPlan venue licensing and main hall space allocations are completed. Primary risk involves high-power AC backup generators for Hall 3 booth exhibitors.',
+    insightChips: [
+      'Hall 3 Power Backup SLA unconfirmed',
+      'VIP Lounge Catering Contract approved',
+      'A/V Equipment delivery buffer is +4 days'
+    ],
+    teamMembers: [
+      { name: 'Sarah Jenkins', role: 'Event Operations Lead', email: 's.jenkins@expo2026.com' },
+      { name: 'Marcus Vance', role: 'Logistics Manager', email: 'm.vance@expo2026.com' }
+    ]
   }
 ];
 

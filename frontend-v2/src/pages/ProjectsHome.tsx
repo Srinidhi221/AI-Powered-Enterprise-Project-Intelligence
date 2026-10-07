@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Search, ArrowUpRight, ShieldAlert } from 'lucide-react';
+import { Plus, Search, ArrowUpRight, ShieldAlert, FolderPlus } from 'lucide-react';
 import { useProject } from '../context/ProjectContext';
 import { SeverityBadge } from '../components/common/SeverityBadge';
+import { AnimatedCounter } from '../components/common/AnimatedCounter';
 
 export const ProjectsHome: React.FC = () => {
-  const { projects, setActiveProject } = useProject();
+  const { projects, setActiveProject, setIsCreateProjectOpen } = useProject();
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
@@ -23,19 +24,21 @@ export const ProjectsHome: React.FC = () => {
       {/* Title & Actions */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-border pb-6">
         <div>
-          <h1 className="text-3xl font-extrabold text-text-primary tracking-tight">Projects Overview</h1>
+          <h1 className="text-3xl font-extrabold text-text-primary tracking-tight">Projects Workspace Overview</h1>
           <p className="text-sm text-text-secondary mt-1">
-            Enterprise project workspace and real-time AI risk intelligence management.
+            Enterprise project folders with isolated document upload spaces and AI risk intelligence.
           </p>
         </div>
 
-        <button
-          onClick={() => navigate('/upload')}
-          className="px-4 py-2 rounded-md bg-brand-500 text-white font-semibold text-xs shadow-xs hover:bg-brand-600 transition-colors flex items-center gap-1.5"
-        >
-          <Plus className="w-4 h-4" />
-          <span>New Project Analysis</span>
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setIsCreateProjectOpen(true)}
+            className="px-4 py-2 rounded-md bg-brand-500 text-white font-semibold text-xs shadow-glow hover:bg-brand-600 transition-colors flex items-center gap-1.5"
+          >
+            <FolderPlus className="w-4 h-4" />
+            <span>Create Project Folder</span>
+          </button>
+        </div>
       </div>
 
       {/* Search Bar */}
@@ -44,7 +47,7 @@ export const ProjectsHome: React.FC = () => {
           <Search className="w-4 h-4 text-text-muted absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search projects..."
+            placeholder="Search project folders..."
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
             className="w-full pl-9 pr-3 py-1.5 rounded-md bg-surface border border-border text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-500"
@@ -52,7 +55,7 @@ export const ProjectsHome: React.FC = () => {
         </div>
 
         <span className="text-xs font-mono text-text-muted">
-          Showing {filteredProjects.length} Project
+          Showing {filteredProjects.length} Active Project Workspaces
         </span>
       </div>
 
@@ -70,7 +73,9 @@ export const ProjectsHome: React.FC = () => {
                   {proj.name}
                 </h3>
                 <SeverityBadge level={proj.healthLabel} size="sm" />
-                <span className="font-mono text-xs font-bold text-text-secondary">{proj.healthScore}/100</span>
+                <span className="font-mono text-xs font-bold text-text-secondary">
+                  <AnimatedCounter value={proj.healthScore} suffix="/100" />
+                </span>
               </div>
 
               <p className="text-xs text-text-secondary leading-relaxed">
@@ -85,7 +90,7 @@ export const ProjectsHome: React.FC = () => {
             <div className="flex items-center gap-6 shrink-0">
               <div className="flex items-center gap-1.5 text-xs font-mono text-status-critical font-bold">
                 <ShieldAlert className="w-4 h-4" />
-                <span>{proj.openRisksCount} Open Risks</span>
+                <span><AnimatedCounter value={proj.openRisksCount} /> Open Risks</span>
               </div>
 
               <ArrowUpRight className="w-5 h-5 text-text-muted group-hover:text-brand-500 transition-colors" />

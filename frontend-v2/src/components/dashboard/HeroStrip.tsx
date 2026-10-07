@@ -2,6 +2,7 @@ import React from 'react';
 import { Sparkles } from 'lucide-react';
 import { useProject } from '../../context/ProjectContext';
 import { SeverityBadge } from '../common/SeverityBadge';
+import { AnimatedCounter } from '../common/AnimatedCounter';
 
 export const HeroStrip: React.FC = () => {
   const { activeProject } = useProject();
@@ -13,7 +14,7 @@ export const HeroStrip: React.FC = () => {
         <div className="flex items-center gap-6 shrink-0">
           <div className="flex flex-col items-center">
             <span className="text-4xl font-extrabold text-brand-500 font-mono tracking-tight">
-              {activeProject.healthScore}
+              <AnimatedCounter value={activeProject.healthScore} />
             </span>
             <span className="text-[10px] font-mono text-text-muted font-bold uppercase">
               / 100 HEALTH INDEX

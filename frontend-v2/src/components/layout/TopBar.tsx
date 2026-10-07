@@ -22,6 +22,7 @@ export const TopBar: React.FC = () => {
     projects,
     activeProject,
     setActiveProject,
+    setIsCreateProjectOpen,
     setIsAddUpdateOpen,
     setIsChatDrawerOpen,
     setIsSearchOpen
@@ -39,10 +40,9 @@ export const TopBar: React.FC = () => {
               <ChevronDown className="w-4 h-4 text-text-muted" />
             </button>
           </DropdownMenu.Trigger>
-          <DropdownMenu.Portal>
-            <DropdownMenu.Content className="w-56 bg-surface border border-border rounded-lg p-1 shadow-dropdown z-50 focus:outline-none">
+            <DropdownMenu.Content className="w-64 bg-surface border border-border rounded-lg p-1 shadow-dropdown z-50 focus:outline-none">
               <DropdownMenu.Label className="px-2 py-1 text-[10px] font-bold text-text-muted uppercase tracking-wider">
-                Select Active Project
+                Select Active Project Workspace
               </DropdownMenu.Label>
               {projects.map(p => (
                 <DropdownMenu.Item
@@ -56,8 +56,15 @@ export const TopBar: React.FC = () => {
                   <span className="font-mono text-[10px] text-text-muted">{p.healthScore}/100</span>
                 </DropdownMenu.Item>
               ))}
+              <DropdownMenu.Separator className="h-px bg-border my-1" />
+              <DropdownMenu.Item
+                onClick={() => setIsCreateProjectOpen(true)}
+                className="flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-bold text-brand-500 hover:bg-brand-50/10 cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>+ Create New Project Folder</span>
+              </DropdownMenu.Item>
             </DropdownMenu.Content>
-          </DropdownMenu.Portal>
         </DropdownMenu.Root>
 
         <span className="text-xs text-text-muted hidden md:inline font-mono">
