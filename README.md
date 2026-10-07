@@ -1,10 +1,10 @@
-## AI-Powered Enterprise Project Intelligence & Risk Advisor
+# AI-Powered Enterprise Project Intelligence & Risk Advisor
 
 An end-to-end, multi-agent AI project intelligence, document analysis, and risk advisory platform. The system ingests unstructured project documents (`.pdf`, `.docx`, `.xlsx`, `.csv`, `.txt`), parses and indexes them into a hybrid vector RAG knowledge base, orchestrates specialized AI agents (Scope, Risk, Blocker, Documentation, and Health agents), and provides an executive analytics dashboard.
 
 ---
 
-## 📋 Table of Contents
+##  Table of Contents
 1. [Key Features](#-key-features)
 2. [Folder & Directory Structure](#-folder--directory-structure)
 3. [Technology Stack](#-technology-stack)
@@ -18,36 +18,36 @@ An end-to-end, multi-agent AI project intelligence, document analysis, and risk 
 
 ---
 
-## ✨ Key Features
+##  Key Features
 
-- 📁 **Multi-Project Workspaces & Folder Isolation**:
+-  **Multi-Project Workspaces & Folder Isolation**:
   - Support for creating separate project folders (e.g., `CampusCare Portal`, `ExhibitionPlan`).
   - Switching between project folders dynamically isolates uploaded documents, risk registers, scope matrices, and grounded AI assistant chat history per project.
   
-- ⏱️ **Scroll-Triggered Number Counter Animations**:
+-  **Scroll-Triggered Number Counter Animations**:
   - All numerical KPI metrics, health scores, risk counters, and days to milestone count up smoothly using custom `IntersectionObserver` frame animations.
 
-- 📄 **Multi-Format Document Ingestion Engine**:
+-  **Multi-Format Document Ingestion Engine**:
   - Drag-and-drop batch upload supporting PDF, Word (`.docx`), Excel (`.xlsx`), CSV, and plain text files with extraction progress streaming.
 
-- 🤖 **Multi-Agent Risk & Scope Detection**:
+-  **Multi-Agent Risk & Scope Detection**:
   - **Scope Agent**: Extracts project goals, milestone dates, and owner commitments.
   - **Risk Agent**: Identifies schedule, technical, resource, and scope threats categorized by impact and likelihood (5x5 matrix).
   - **Blocker Agent**: Detects overdue action items, unassigned tasks, and pending decision bottlenecks.
   - **Health Agent**: Computes weighted Health Index scores (0–100) across Scope Clarity, Timeline Risk, and Blocker Resolution dimensions.
 
-- 🧪 **Interactive What-If Simulation Engine**:
+-  **Interactive What-If Simulation Engine**:
   - Adjust project milestone deadlines, resolve hypothetical blockers, and evaluate predicted project health score deltas in real-time.
 
-- 📄 **Executive Downloadable PDF Reports**:
+-  **Executive Downloadable PDF Reports**:
   - Built-in multi-page PDF generation engine with slate header banners, health score gauges, KPI grid cards, formatted risk tables, and page footers.
 
-- 🎨 **Modern Editorial UI System**:
+-  **Modern Editorial UI System**:
   - Pure Black (`#000000`) and Gold (`#EAB308`) high-contrast Dark Mode with flat Notion/Linear editorial layout and Light/Dark/System theme switching.
 
 ---
 
-## 📁 Folder & Directory Structure
+##  Folder & Directory Structure
 
 ```text
 AI-Powered-Enterprise-Project-Intelligence/
@@ -152,7 +152,7 @@ Ensure you have the following installed on your environment:
 
 ---
 
-## 🚀 Installation & Local Setup Guide
+##  Installation & Local Setup Guide
 
 ### 1. Backend Setup (FastAPI & RAG Pipeline)
 
@@ -222,7 +222,7 @@ Ensure you have the following installed on your environment:
 
 ---
 
-## ⚡ Core System Capabilities & Workflows
+##  Core System Capabilities & Workflows
 
 ### 1. Project Folder Creation & Switching (`ExhibitionPlan`)
 - Click **"+ Create Project Folder"** in the TopBar dropdown or Projects Overview page.
@@ -247,7 +247,7 @@ Ensure you have the following installed on your environment:
 
 ---
 
-## 🧪 API Endpoints & Testing
+##  API Endpoints & Testing
 
 ### Running Backend Tests
 ```bash
