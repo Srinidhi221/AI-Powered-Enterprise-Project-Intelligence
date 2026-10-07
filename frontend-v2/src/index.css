@@ -37,7 +37,7 @@
 }
 
 :root {
-  /* PRIMARILY LIGHT INTERFACE BY DEFAULT (Linear / Notion / Stripe style) */
+  /* LIGHT THEME TOKENS */
   --color-bg-app: #FAFAF9;
   --color-bg-surface: #FFFFFF;
   --color-bg-surface-hover: #F3F4F6;
@@ -54,11 +54,12 @@
   --color-text-muted: #64748B;
   --color-text-inverse: #FFFFFF;
 
-  --color-brand-50: #EEF2FF;
-  --color-brand-100: #E0E7FF;
-  --color-brand-500: #4F46E5;
-  --color-brand-600: #4338CA;
-  --color-brand-700: #3730A3;
+  /* Gold / Amber Accent for Light Mode */
+  --color-brand-50: #FEFCE8;
+  --color-brand-100: #FEF08A;
+  --color-brand-500: #D97706;
+  --color-brand-600: #B45309;
+  --color-brand-700: #92400E;
 
   --color-status-healthy: #10B981;
   --color-status-healthy-bg: #ECFDF5;
@@ -73,49 +74,50 @@
   --color-conf-medium: #D97706;
   --color-conf-low: #DC2626;
 
-  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
-  --shadow-dropdown: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.03);
+  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
+  --shadow-dropdown: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
 }
 
 .dark {
-  /* DARK THEME: Charcoal + Black (Linear / Stripe Dark Mode - No heavy purple!) */
-  --color-bg-app: #0B0F17;
-  --color-bg-surface: #111827;
-  --color-bg-surface-hover: #1F2937;
-  --color-bg-surface-active: #374151;
+  /* DARK THEME: BLACK & GOLD (Pure Black Background + Rich Gold Accent) */
+  --color-bg-app: #000000;
+  --color-bg-surface: #0A0A0C;
+  --color-bg-surface-hover: #141417;
+  --color-bg-surface-active: #1F1F24;
   
-  --color-bg-card: #111827;
-  --color-border-card: #1F2937;
+  --color-bg-card: #0A0A0C;
+  --color-border-card: #222227;
   
-  --color-border: #1F2937;
-  --color-divider: #161E2E;
+  --color-border: #1F1F24;
+  --color-divider: #141417;
   
   --color-text-primary: #F8FAFC;
   --color-text-secondary: #94A3B8;
   --color-text-muted: #64748B;
-  --color-text-inverse: #0F172A;
+  --color-text-inverse: #000000;
 
-  --color-brand-50: #1E1B4B;
-  --color-brand-100: #312E81;
-  --color-brand-500: #6366F1;
-  --color-brand-600: #818CF8;
-  --color-brand-700: #A5B4FC;
+  /* Rich Luxury Gold Accents */
+  --color-brand-50: #422006;
+  --color-brand-100: #713F12;
+  --color-brand-500: #EAB308;
+  --color-brand-600: #FACC15;
+  --color-brand-700: #FDE047;
 
   --color-status-healthy: #34D399;
   --color-status-healthy-bg: rgba(16, 185, 129, 0.12);
-  --color-status-warning: #FBBF24;
-  --color-status-warning-bg: rgba(245, 158, 11, 0.12);
+  --color-status-warning: #EAB308;
+  --color-status-warning-bg: rgba(234, 179, 8, 0.12);
   --color-status-critical: #F87171;
-  --color-status-critical-bg: rgba(239, 68, 68, 0.12);
+  --color-status-critical-bg: rgba(248, 113, 113, 0.12);
   --color-status-info: #60A5FA;
-  --color-status-info-bg: rgba(59, 130, 246, 0.12);
+  --color-status-info-bg: rgba(96, 165, 250, 0.12);
 
   --color-conf-high: #34D399;
-  --color-conf-medium: #FBBF24;
+  --color-conf-medium: #EAB308;
   --color-conf-low: #F87171;
 
-  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
-  --shadow-dropdown: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+  --shadow-dropdown: 0 10px 25px -5px rgba(0, 0, 0, 0.8);
 }
 
 body {

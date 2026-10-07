@@ -55,23 +55,25 @@ const NAV_GROUPS = [
 
 export const Sidebar: React.FC = () => {
   return (
-    <aside className="w-60 bg-surface border-r border-border h-screen flex flex-col justify-between shrink-0 select-none">
+    <aside className="w-64 bg-surface border-r border-border h-screen flex flex-col justify-between shrink-0 select-none">
       <div>
         {/* Header Branding */}
-        <div className="h-14 px-5 border-b border-border flex items-center gap-2.5">
-          <div className="w-6 h-6 rounded-md bg-brand-500 text-white flex items-center justify-center font-bold text-xs">
-            H
+        <div className="h-16 px-5 border-b border-border flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-brand-500 text-black font-bold flex items-center justify-center">
+            <Sparkles className="w-4 h-4 fill-current" />
           </div>
           <div>
-            <h1 className="font-bold text-sm text-text-primary tracking-tight leading-none">
-              HealthSync AI
+            <h1 className="font-extrabold text-sm text-text-primary tracking-tight leading-tight">
+              AI Project Intelligence
             </h1>
-            <span className="text-[10px] text-text-muted font-medium">Project Intelligence</span>
+            <span className="text-[10px] font-mono text-brand-500 font-bold tracking-wider block">
+              RISK ADVISOR v2.0
+            </span>
           </div>
         </div>
 
         {/* Navigation */}
-        <nav className="p-3 space-y-5 overflow-y-auto max-h-[calc(100vh-120px)]">
+        <nav className="p-3 space-y-5 overflow-y-auto max-h-[calc(100vh-130px)]">
           {NAV_GROUPS.map((group, idx) => (
             <div key={idx} className="space-y-0.5">
               <span className="px-3 text-[10px] font-bold text-text-muted uppercase tracking-wider block mb-1">
@@ -86,7 +88,7 @@ export const Sidebar: React.FC = () => {
                     className={({ isActive }) =>
                       `flex items-center gap-2.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
                         isActive
-                          ? 'bg-brand-50 dark:bg-brand-50/20 text-brand-600 dark:text-brand-500 font-semibold'
+                          ? 'bg-brand-50/20 text-brand-500 font-bold border-l-2 border-brand-500'
                           : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover'
                       }`
                     }
@@ -104,7 +106,7 @@ export const Sidebar: React.FC = () => {
       {/* Footer info */}
       <div className="p-3.5 border-t border-border text-[11px] text-text-muted flex items-center justify-between">
         <span>Grounded RAG v2</span>
-        <span className="font-mono text-[10px] text-text-secondary">4 Documents</span>
+        <span className="font-mono text-[10px] text-brand-500 font-bold">4 Documents</span>
       </div>
     </aside>
   );

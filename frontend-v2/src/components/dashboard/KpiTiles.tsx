@@ -45,20 +45,20 @@ export const KpiTiles: React.FC = () => {
   ];
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-6 py-4 border-b border-border text-xs">
+    <div className="flex flex-wrap items-center justify-between gap-6 py-6 border-b border-border text-xs">
       {tiles.map((tile, i) => (
         <React.Fragment key={i}>
-          <Link to={tile.path} className="flex-1 min-w-[140px] group hover:opacity-80 transition-opacity">
+          <Link to={tile.path} className="flex-1 min-w-[140px] group hover:opacity-90 transition-opacity">
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-bold text-text-muted uppercase tracking-wider">{tile.label}</span>
-              <ArrowUpRight className="w-3 h-3 text-text-muted group-hover:text-brand-500 transition-colors" />
+              <ArrowUpRight className="w-3.5 h-3.5 text-text-muted group-hover:text-brand-500 transition-colors" />
             </div>
-            <span className={`text-2xl font-extrabold font-mono tracking-tight block mt-1 ${tile.color}`}>
+            <span className={`text-4xl font-extrabold font-mono tracking-tight block mt-2.5 ${tile.color}`}>
               {tile.value}
             </span>
-            <span className="text-[11px] text-text-secondary truncate block mt-0.5">{tile.sub}</span>
+            <span className="text-xs text-text-secondary truncate block mt-1 font-medium">{tile.sub}</span>
           </Link>
-          {i < tiles.length - 1 && <div className="h-10 w-px bg-border hidden lg:block" />}
+          {i < tiles.length - 1 && <div className="h-14 w-px bg-border hidden lg:block" />}
         </React.Fragment>
       ))}
     </div>

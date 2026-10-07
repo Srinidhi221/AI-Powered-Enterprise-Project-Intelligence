@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Upload, FileText, Sparkles, CheckCircle2, AlertTriangle, ArrowRight, X, Trash2, Plus, FileCode, Layers } from 'lucide-react';
+import { Upload, FileText, Sparkles, CheckCircle2, ArrowRight, Trash2 } from 'lucide-react';
 import { DocumentType } from '../types';
 import { StoryLayer } from '../components/processing/StoryLayer';
 import { LiveLogTerminal } from '../components/processing/LiveLogTerminal';
@@ -18,8 +18,9 @@ interface SelectedFile {
 const DEFAULT_FILES: SelectedFile[] = [
   { id: 'f-1', name: 'SRS_Document_v2.pdf', size: '2.4 MB', type: 'SRS' },
   { id: 'f-2', name: 'Architecture_Spec.docx', size: '1.1 MB', type: 'Proposal' },
-  { id: 'f-3', name: 'Meeting_Notes_Oct02.txt', size: '18 KB', type: 'Meeting Notes' },
-  { id: 'f-4', name: 'Progress_Update_Week3.pdf', size: '850 KB', type: 'Progress Update' }
+  { id: 'f-3', name: 'Project_Metrics_Q3.xlsx', size: '450 KB', type: 'Task List' },
+  { id: 'f-4', name: 'Meeting_Notes_Oct02.txt', size: '18 KB', type: 'Meeting Notes' },
+  { id: 'f-5', name: 'Progress_Update_Week3.pdf', size: '850 KB', type: 'Progress Update' }
 ];
 
 export const UploadIngestion: React.FC = () => {
@@ -37,7 +38,7 @@ export const UploadIngestion: React.FC = () => {
       if (fname.includes('srs') || fname.includes('requirement')) suggestedType = 'SRS';
       else if (fname.includes('prop') || fname.includes('arch') || fname.includes('spec')) suggestedType = 'Proposal';
       else if (fname.includes('meet') || fname.includes('notes')) suggestedType = 'Meeting Notes';
-      else if (fname.includes('task')) suggestedType = 'Task List';
+      else if (fname.includes('task') || fname.includes('xlsx') || fname.includes('csv')) suggestedType = 'Task List';
 
       return {
         id: `f-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
@@ -56,6 +57,9 @@ export const UploadIngestion: React.FC = () => {
     accept: {
       'application/pdf': ['.pdf'],
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
+      'application/msword': ['.doc'],
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+      'application/vnd.ms-excel': ['.xls'],
       'text/csv': ['.csv'],
       'text/plain': ['.txt']
     }
@@ -100,7 +104,7 @@ export const UploadIngestion: React.FC = () => {
           Multi-Document Ingestion & Pipeline Run
         </h1>
         <p className="text-xs text-text-secondary mt-1">
-          Upload single or multiple PDF, DOCX, CSV, and TXT files simultaneously. Auto-detects tags and builds vector index.
+          Upload multiple project documents simultaneously (PDF, DOCX, XLSX, CSV, TXT). Auto-detects tags and builds vector index.
         </p>
       </div>
 
@@ -142,7 +146,7 @@ export const UploadIngestion: React.FC = () => {
               <h2 className="text-sm font-bold text-text-primary uppercase tracking-wider">
                 1. Multi-File Drag & Drop Upload Zone
               </h2>
-              <span className="text-xs text-text-muted font-mono">PDF, DOCX, CSV, TXT (Multiple files allowed)</span>
+              <span className="text-xs text-brand-500 font-mono font-bold">Supports PDF, DOCX, XLSX, CSV, TXT</span>
             </div>
 
             <div
@@ -157,7 +161,7 @@ export const UploadIngestion: React.FC = () => {
                 {isDragActive ? 'Drop your files here now...' : 'Drag & drop MULTIPLE project documents here'}
               </p>
               <p className="text-xs text-text-muted mt-1">
-                Or click to browse and select multiple files simultaneously from your computer
+                Or click to select multiple PDF, DOCX, XLSX, CSV, or TXT files from your computer
               </p>
             </div>
           </div>
@@ -233,7 +237,7 @@ export const UploadIngestion: React.FC = () => {
           <div className="flex justify-end pt-4 border-t border-border">
             <button
               onClick={handleStartAnalysis}
-              className="px-6 py-3 rounded-md bg-brand-500 text-white font-bold text-xs shadow-xs hover:bg-brand-600 transition-colors flex items-center gap-2"
+              className="px-6 py-3 rounded-md bg-brand-500 text-black font-bold text-xs shadow-xs hover:bg-brand-600 transition-colors flex items-center gap-2"
             >
               <Sparkles className="w-4 h-4" />
               <span>Run Pipeline & Multi-Agent Analysis ({selectedFiles.length} Files)</span>

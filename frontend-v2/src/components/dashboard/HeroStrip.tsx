@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowDownRight, ArrowUpRight, Sparkles, AlertCircle } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { useProject } from '../../context/ProjectContext';
 import { SeverityBadge } from '../common/SeverityBadge';
 
@@ -41,22 +41,6 @@ export const HeroStrip: React.FC = () => {
             {activeProject.summary}
           </p>
         </div>
-      </div>
-
-      {/* Insight Chips */}
-      <div className="pt-3 border-t border-border/60 flex flex-wrap items-center gap-2 text-xs">
-        <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider mr-1">
-          KEY DISCOVERED INSIGHTS:
-        </span>
-        {activeProject.insightChips.map((chip, i) => (
-          <span
-            key={i}
-            className="px-2.5 py-1 rounded bg-surface border border-border text-text-secondary flex items-center gap-1.5 font-medium"
-          >
-            <AlertCircle className="w-3 h-3 text-status-warning shrink-0" />
-            <span>{chip}</span>
-          </span>
-        ))}
       </div>
     </div>
   );

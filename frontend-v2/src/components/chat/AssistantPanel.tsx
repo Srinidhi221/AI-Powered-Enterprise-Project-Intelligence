@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  MessageSquare,
   X,
   Send,
   Sparkles,
@@ -17,13 +16,6 @@ import { SourceCitationChip } from '../common/SourceCitationChip';
 interface AssistantPanelProps {
   isFullPage?: boolean;
 }
-
-const STARTER_QUESTIONS = [
-  'Are we on track for Milestone 3 delivery?',
-  'What are our biggest high-severity risks?',
-  'Who owns the integration testing phase?',
-  'What decisions are currently pending?'
-];
 
 export const AssistantPanel: React.FC<AssistantPanelProps> = ({ isFullPage = false }) => {
   const { isChatDrawerOpen, setIsChatDrawerOpen, activeProject, setBlockers } = useProject();
@@ -121,14 +113,14 @@ export const AssistantPanel: React.FC<AssistantPanelProps> = ({ isFullPage = fal
   };
 
   const content = (
-    <div className={`flex flex-col justify-between h-full ${isFullPage ? 'w-full max-w-4xl mx-auto py-2' : 'w-screen max-w-md bg-surface border-l border-border shadow-dropdown'}`}>
+    <div className={`flex flex-col justify-between h-full ${isFullPage ? 'w-full max-w-7xl mx-auto py-2' : 'w-screen max-w-2xl bg-surface border-l border-border shadow-dropdown'}`}>
       {/* Header */}
-      <div className={`py-3 px-4 border-b border-border flex items-center justify-between ${isFullPage ? '' : 'bg-surface-hover/30'}`}>
-        <div className="flex items-center gap-2.5">
+      <div className={`py-4 px-6 border-b border-border flex items-center justify-between ${isFullPage ? '' : 'bg-surface-hover/30'}`}>
+        <div className="flex items-center gap-3">
           <Sparkles className="w-5 h-5 text-brand-500" />
           <div>
-            <h3 className="text-base font-bold text-text-primary">Conversational RAG Assistant</h3>
-            <span className="text-[11px] text-text-muted font-mono">Grounded Q&A Engine • Grounded in 4 documents</span>
+            <h3 className="text-lg font-bold text-text-primary">Conversational RAG Assistant</h3>
+            <span className="text-xs text-text-muted font-mono">Grounded Q&A Engine • Grounded in 4 active documents</span>
           </div>
         </div>
         {!isFullPage && (
@@ -136,13 +128,13 @@ export const AssistantPanel: React.FC<AssistantPanelProps> = ({ isFullPage = fal
             onClick={() => setIsChatDrawerOpen(false)}
             className="p-1.5 rounded-md hover:bg-surface-hover text-text-muted hover:text-text-primary transition-colors"
           >
-            <X className="w-4 h-4" />
+            <X className="w-5 h-5" />
           </button>
         )}
       </div>
 
       {/* Scope Filter */}
-      <div className="py-2.5 px-4 border-b border-border flex items-center justify-between text-xs text-text-secondary">
+      <div className="py-3 px-6 border-b border-border flex items-center justify-between text-xs text-text-secondary">
         <span className="font-semibold flex items-center gap-1.5">
           <Filter className="w-3.5 h-3.5 text-brand-500" />
           <span>Document Scope Filter:</span>
@@ -160,16 +152,16 @@ export const AssistantPanel: React.FC<AssistantPanelProps> = ({ isFullPage = fal
       </div>
 
       {/* Chat Messages List */}
-      <div className="py-4 space-y-6 overflow-y-auto flex-1 text-xs">
+      <div className="py-6 px-6 space-y-6 overflow-y-auto flex-1 text-xs">
         {messages.map(msg => (
           <div
             key={msg.id}
             className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'} space-y-1`}
           >
             <div
-              className={`p-4 rounded-lg max-w-[85%] leading-relaxed ${
+              className={`p-4 rounded-lg max-w-[80%] leading-relaxed ${
                 msg.sender === 'user'
-                  ? 'bg-brand-500 text-white font-medium'
+                  ? 'bg-brand-500 text-black font-semibold'
                   : 'bg-surface border border-border text-text-primary'
               }`}
             >
@@ -230,40 +222,22 @@ export const AssistantPanel: React.FC<AssistantPanelProps> = ({ isFullPage = fal
         ))}
       </div>
 
-      {/* Suggested Starters */}
-      <div className="py-3 border-t border-border space-y-2">
-        <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block">
-          SUGGESTED GROUNDED QUESTIONS
-        </span>
-        <div className="flex flex-wrap gap-2">
-          {STARTER_QUESTIONS.map((q, i) => (
-            <button
-              key={i}
-              onClick={() => handleSend(q)}
-              className="px-3 py-1.5 rounded-md bg-surface border border-border text-text-secondary hover:text-brand-500 hover:border-brand-500 text-xs transition-colors text-left font-medium"
-            >
-              {q}
-            </button>
-          ))}
-        </div>
-      </div>
-
       {/* Input Box */}
-      <div className="pt-3 border-t border-border flex items-center gap-2">
+      <div className="py-4 px-6 border-t border-border flex items-center gap-3">
         <input
           type="text"
           placeholder="Ask any question grounded in your uploaded project documents..."
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && handleSend()}
-          className="w-full px-4 py-2.5 rounded-md bg-surface border border-border text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-500"
+          className="w-full px-4 py-3 rounded-md bg-surface border border-border text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-500 font-medium"
         />
         <button
           onClick={() => handleSend()}
-          className="px-4 py-2.5 rounded-md bg-brand-500 text-white hover:bg-brand-600 text-xs font-semibold transition-colors shrink-0 flex items-center gap-1.5"
+          className="px-6 py-3 rounded-md bg-brand-500 text-black hover:bg-brand-600 text-sm font-bold transition-colors shrink-0 flex items-center gap-2"
         >
           <Send className="w-4 h-4" />
-          <span>Ask</span>
+          <span>Ask AI</span>
         </button>
       </div>
     </div>
@@ -274,7 +248,7 @@ export const AssistantPanel: React.FC<AssistantPanelProps> = ({ isFullPage = fal
   return (
     <div className="fixed inset-0 z-50 overflow-hidden animate-fade-in">
       <div
-        className="absolute inset-0 bg-black/40 backdrop-blur-xs"
+        className="absolute inset-0 bg-black/50 backdrop-blur-xs"
         onClick={() => setIsChatDrawerOpen(false)}
       />
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
