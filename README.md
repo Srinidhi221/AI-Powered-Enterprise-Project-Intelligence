@@ -262,7 +262,8 @@ pytest tests/ -v
 
 ---
 
-## 📝 License & Acknowledgments
+## License & Acknowledgments
 
-Built for the **Infosys AI Track Project Intelligence Platform**.  
+Built under the **Infosys Springboard Virtual Internship 7.0 - AI Track **.  
 Designed and developed with modern agentic AI architecture, RAG vector retrieval, and high-contrast editorial UI standards.
+(To be updated)
