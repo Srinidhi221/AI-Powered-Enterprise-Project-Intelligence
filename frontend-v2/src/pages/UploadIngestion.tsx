@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Upload, FileText, Sparkles, CheckCircle2, ArrowRight, Trash2 } from 'lucide-react';
-import { DocumentType } from '../types';
+import { DocumentType, DocumentFile, RiskItem, BlockerItem, Deliverable } from '../types';
 import { StoryLayer } from '../components/processing/StoryLayer';
 import { LiveLogTerminal } from '../components/processing/LiveLogTerminal';
 import { MOCK_PROGRESS_EVENTS } from '../services/mockData';
 import { useDropzone } from 'react-dropzone';
+import { useProject } from '../context/ProjectContext';
 
 interface SelectedFile {
   id: string;
@@ -24,6 +25,16 @@ const DEFAULT_FILES: SelectedFile[] = [
 ];
 
 export const UploadIngestion: React.FC = () => {
+  const {
+    activeProject,
+    setActiveProject,
+    setDocuments,
+    setRisks,
+    setBlockers,
+    setDeliverables,
+    setWhatChangedSummary
+  } = useProject();
+
   const [selectedFiles, setSelectedFiles] = useState<SelectedFile[]>(DEFAULT_FILES);
   const [pastedNotes, setPastedNotes] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -73,6 +84,104 @@ export const UploadIngestion: React.FC = () => {
     setSelectedFiles(prev => prev.map(f => (f.id === id ? { ...f, type } : f)));
   };
 
+  const handleFinishIngestion = () => {
+    const timeStr = new Date().toLocaleString();
+
+    // 1. Add uploaded selectedFiles into DocumentLibrary documents
+    const newDocFiles: DocumentFile[] = selectedFiles.map((sf, idx) => ({
+      id: `doc-ingest-${Date.now()}-${idx}`,
+      name: sf.name,
+      type: sf.type,
+      uploadDate: timeStr,
+      size: sf.size,
+      status: 'ready',
+      chunksCount: Math.floor(Math.random() * 25) + 12,
+      insightsContributed: [
+        `Extracted ${sf.type} requirements`,
+        `Risk risk-ingest-${idx}`,
+        `Deliverable del-ingest-${idx}`
+      ]
+    }));
+
+    setDocuments(prev => [...newDocFiles, ...prev]);
+
+    // 2. Generate newly extracted risks
+    const newlyExtractedRisks: RiskItem[] = selectedFiles.map((sf, idx) => ({
+      id: `risk-ingest-${Date.now()}-${idx}`,
+      title: `Extracted Vulnerability: ${sf.name.replace(/\.[^/.]+$/, '')} Dependency SLA`,
+      category: idx % 2 === 0 ? 'Technical' : 'Schedule',
+      impact: 4,
+      likelihood: 3,
+      score: 12,
+      status: 'open',
+      sourceDoc: sf.name,
+      sourcePassage: `Extracted passage from ${sf.name}: Delivery buffer constrained by unverified external vendor SLA.`,
+      confidence: 'high',
+      explanation: `RAG multi-agent analysis extracted security and schedule constraints from ${sf.name}.`,
+      suggestedMitigation: `Assign technical lead to review ${sf.name} and request expedited vendor SLA signoff.`,
+      owner: activeProject.teamMembers[0]?.name || 'Unassigned'
+    }));
+
+    setRisks(prev => [...newlyExtractedRisks, ...prev]);
+
+    // 3. Generate newly extracted deliverables & blockers
+    const newlyExtractedDeliverables: Deliverable[] = selectedFiles.map((sf, idx) => ({
+      id: `del-ingest-${Date.now()}-${idx}`,
+      name: `${sf.name.replace(/\.[^/.]+$/, '')} Acceptance Testing`,
+      owner: activeProject.teamMembers[idx % activeProject.teamMembers.length]?.name || 'Unassigned',
+      dueDate: new Date(Date.now() + (idx + 1) * 7 * 86400000).toISOString().split('T')[0],
+      status: 'on_track',
+      sourceDoc: sf.name,
+      sourcePassage: `Requirement passage from ${sf.name}: Verify all module outputs.`,
+      confidence: 'high',
+      module: sf.type
+    }));
+
+    setDeliverables(prev => [...newlyExtractedDeliverables, ...prev]);
+
+    const newlyExtractedBlockers: BlockerItem[] = [
+      {
+        id: `blk-ingest-${Date.now()}`,
+        type: 'blocker',
+        title: `Compliance Review for ${selectedFiles[0]?.name || 'Ingested Files'}`,
+        owner: activeProject.teamMembers[0]?.name || 'Unassigned',
+        dueDate: new Date(Date.now() + 5 * 86400000).toISOString().split('T')[0],
+        status: 'in_progress',
+        sourceMeeting: selectedFiles[0]?.name || 'Ingested File',
+        sourcePassage: 'Awaiting compliance signoff on newly ingested files.',
+        confidence: 'high',
+        isOverdue: false,
+        isUnassigned: false,
+        isNeedsReview: true
+      }
+    ];
+
+    setBlockers(prev => [...newlyExtractedBlockers, ...prev]);
+
+    // 4. Update Active Project metrics
+    const updatedHealth = Math.max(55, activeProject.healthScore - (newlyExtractedRisks.length > 0 ? 3 : 0));
+    setActiveProject({
+      ...activeProject,
+      lastUpdated: timeStr,
+      openRisksCount: activeProject.openRisksCount + newlyExtractedRisks.length,
+      blockersCount: activeProject.blockersCount + newlyExtractedBlockers.length,
+      actionItemsCount: activeProject.actionItemsCount + newlyExtractedDeliverables.length,
+      healthScore: updatedHealth,
+      healthLabel: updatedHealth >= 80 ? 'Healthy' : updatedHealth >= 60 ? 'Needs Attention' : 'At Risk',
+      summary: `Latest RAG Ingestion Run (${timeStr}): Ingested ${selectedFiles.length} project documents (${selectedFiles.map(f => f.name).join(', ')}). Multi-agent pipeline extracted ${newlyExtractedRisks.length} new risks, ${newlyExtractedDeliverables.length} deliverables, and ${newlyExtractedBlockers.length} active blockers.`
+    });
+
+    // 5. Trigger Incremental Update Modal
+    setWhatChangedSummary({
+      newRisksCount: newlyExtractedRisks.length,
+      resolvedRisksCount: 0,
+      newActionItemsCount: newlyExtractedBlockers.length,
+      prevHealthScore: activeProject.healthScore,
+      newHealthScore: updatedHealth,
+      possibleDuplicates: []
+    });
+  };
+
   const handleStartAnalysis = () => {
     if (selectedFiles.length === 0 && !pastedNotes.trim()) {
       alert('Please upload at least one document or paste project notes to analyze.');
@@ -89,11 +198,12 @@ export const UploadIngestion: React.FC = () => {
           clearInterval(interval);
           setIsProcessing(false);
           setIsComplete(true);
+          handleFinishIngestion();
           return 10;
         }
         return prev + 1;
       });
-    }, 800);
+    }, 600);
   };
 
   return (
@@ -104,7 +214,7 @@ export const UploadIngestion: React.FC = () => {
           Multi-Document Ingestion & Pipeline Run
         </h1>
         <p className="text-xs text-text-secondary mt-1">
-          Upload multiple project documents simultaneously (PDF, DOCX, XLSX, CSV, TXT). Auto-detects tags and builds vector index.
+          Upload multiple project documents simultaneously (PDF, DOCX, XLSX, CSV, TXT). Auto-detects tags and builds vector index for active project folder: <strong>{activeProject.name}</strong>.
         </p>
       </div>
 
@@ -118,21 +228,29 @@ export const UploadIngestion: React.FC = () => {
                 <CheckCircle2 className="w-8 h-8 text-status-healthy shrink-0" />
                 <div>
                   <h3 className="text-base font-bold text-text-primary">
-                    Multi-Document Analysis Completed!
+                    Multi-Document Analysis & Ingestion Completed!
                   </h3>
                   <p className="text-xs text-text-secondary">
-                    Processed {selectedFiles.length} files. Extracted 12 deliverables, 7 risks, 4 blockers, and 12 user stories with grounding citations.
+                    Successfully ingested {selectedFiles.length} files into <strong>{activeProject.name}</strong> workspace. Document Library, Risks, Deliverables, and Generated User Stories have been populated.
                   </p>
                 </div>
               </div>
 
-              <button
-                onClick={() => navigate('/dashboard')}
-                className="px-5 py-2.5 rounded-md bg-status-healthy text-white font-bold text-xs hover:opacity-90 transition-opacity flex items-center gap-2 shrink-0"
-              >
-                <span>Open Dashboard</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => navigate('/risks')}
+                  className="px-4 py-2.5 rounded-md border border-brand-500/40 text-brand-500 font-bold text-xs hover:bg-brand-50/10 transition-colors"
+                >
+                  View Risks Matrix
+                </button>
+                <button
+                  onClick={() => navigate('/dashboard')}
+                  className="px-5 py-2.5 rounded-md bg-status-healthy text-white font-bold text-xs hover:opacity-90 transition-opacity flex items-center gap-2 shrink-0 shadow-glow"
+                >
+                  <span>Open Dashboard</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           )}
 
@@ -144,7 +262,7 @@ export const UploadIngestion: React.FC = () => {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-bold text-text-primary uppercase tracking-wider">
-                1. Multi-File Drag & Drop Upload Zone
+                1. Multi-File Drag & Drop Upload Zone ({activeProject.name})
               </h2>
               <span className="text-xs text-brand-500 font-mono font-bold">Supports PDF, DOCX, XLSX, CSV, TXT</span>
             </div>
