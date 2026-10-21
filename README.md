@@ -264,6 +264,7 @@ pytest tests/ -v
 
 ## License & Acknowledgments
 
-Built under the **Infosys Springboard Virtual Internship 7.0 - AI Track **.  
+This project is licensed under the [MIT License](LICENSE).
+
+Built under the **Infosys Springboard Virtual Internship 7.0 – AI Track**.
 Designed and developed with modern agentic AI architecture, RAG vector retrieval, and high-contrast editorial UI standards.
-(To be updated)
